@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import './App.css';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 import TitleScreen from './components/TitleScreen';
+import { GameRoom } from './domain/GameRoom';
+import GameRoomComponent from './features/gameRoom/GameRoom';
+import { playerJoined, roomStateUpdated, selectGameRoomId } from './features/gameRoom/gameRoomSlice';
 
 function App() {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [roomId, setRoomId] = useState<string | null>(null);
+  const roomId = useAppSelector(selectGameRoomId);
+
+  console.log(roomId);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const newSocket = io('ws://localhost:3001');
@@ -18,14 +26,14 @@ function App() {
       console.log(`Disconnected ${newSocket.id}`);
     });
 
-    newSocket.on('CREATED_ROOM', ({ roomId }: { roomId: string }) => {
+    newSocket.on('UPDATE_ROOM_STATE', ({ room }: { room: GameRoom }) => {
       console.log(`Room created ${roomId}`);
-      setRoomId(roomId);
+      dispatch(roomStateUpdated({ newState: room }));
     });
 
-    newSocket.on('JOINED_ROOM', ({ roomId }: { roomId: string }) => {
+    newSocket.on('PLAYER_JOINED', ({ playerId }: { playerId: string }) => {
       console.log(`Room joined ${roomId}`);
-      setRoomId(roomId);
+      dispatch(playerJoined({ playerId: playerId }));
     });
 
     setSocket(newSocket);
@@ -33,8 +41,8 @@ function App() {
 
   return (
     <div className="App">
-      {roomId !== null ? (
-        <div>Welcome to room {roomId}</div>
+      {roomId !== undefined ? (
+        <GameRoomComponent></GameRoomComponent>
       ) : (
         <div>{socket && <TitleScreen socket={socket}></TitleScreen>}</div>
       )}
