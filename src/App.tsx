@@ -7,7 +7,13 @@ import { GameRoom } from './domain/GameRoom';
 import { GameRoomDto } from './dto/GameRoomDto';
 import { PlayerDto } from './dto/PlayerDto';
 import GameRoomComponent from './features/gameRoom/GameRoom';
-import { playerIdAssigned, playerJoined, roomStateUpdated, selectGameRoomId } from './features/gameRoom/gameRoomSlice';
+import {
+  gameStarted,
+  playerIdAssigned,
+  playerJoined,
+  roomStateUpdated,
+  selectGameRoomId,
+} from './features/gameRoom/gameRoomSlice';
 
 function App() {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -18,7 +24,7 @@ function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const newSocket = io('ws://localhost:3001');
+    const newSocket = io('ws://192.168.1.7:3001');
 
     newSocket.on('connect', () => {
       console.log(`Connected ${newSocket.id}`);
@@ -32,6 +38,7 @@ function App() {
       const newState: GameRoom = {
         id: room.id,
         hostId: room.hostId,
+        state: room.state,
         players: room.players.map((player) => ({
           id: player.id,
         })),
@@ -47,16 +54,21 @@ function App() {
       dispatch(playerIdAssigned({ playerId: playerId }));
     });
 
+    newSocket.on('STARTED_GAME', () => {
+      dispatch(gameStarted());
+    });
+
     setSocket(newSocket);
   }, [dispatch]);
 
   return (
     <div className="App">
-      {roomId !== undefined ? (
-        <GameRoomComponent></GameRoomComponent>
-      ) : (
-        <div>{socket && <TitleScreen socket={socket}></TitleScreen>}</div>
-      )}
+      {socket &&
+        (roomId !== undefined ? (
+          <GameRoomComponent socket={socket}></GameRoomComponent>
+        ) : (
+          <TitleScreen socket={socket}></TitleScreen>
+        ))}
     </div>
   );
 }
