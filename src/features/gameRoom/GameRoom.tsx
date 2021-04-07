@@ -12,7 +12,7 @@ export default function GameRoom() {
       <h3>Players</h3>
       <ul>
         {players?.map((player) => (
-          <li>{player}</li>
+          <li>{player.id}</li>
         ))}
       </ul>
     </div>

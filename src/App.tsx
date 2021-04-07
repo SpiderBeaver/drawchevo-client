@@ -3,7 +3,8 @@ import { io, Socket } from 'socket.io-client';
 import './App.css';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import TitleScreen from './components/TitleScreen';
-import { GameRoom } from './domain/GameRoom';
+import { GameRoomDto } from './dto/GameRoomDto';
+import { PlayerDto } from './dto/PlayerDto';
 import GameRoomComponent from './features/gameRoom/GameRoom';
 import { playerJoined, roomStateUpdated, selectGameRoomId } from './features/gameRoom/gameRoomSlice';
 
@@ -26,18 +27,16 @@ function App() {
       console.log(`Disconnected ${newSocket.id}`);
     });
 
-    newSocket.on('UPDATE_ROOM_STATE', ({ room }: { room: GameRoom }) => {
-      console.log(`Room created ${roomId}`);
+    newSocket.on('UPDATE_ROOM_STATE', ({ room }: { room: GameRoomDto }) => {
       dispatch(roomStateUpdated({ newState: room }));
     });
 
-    newSocket.on('PLAYER_JOINED', ({ playerId }: { playerId: string }) => {
-      console.log(`Room joined ${roomId}`);
-      dispatch(playerJoined({ playerId: playerId }));
+    newSocket.on('PLAYER_JOINED', ({ player }: { player: PlayerDto }) => {
+      dispatch(playerJoined({ playerId: player.id }));
     });
 
     setSocket(newSocket);
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="App">
