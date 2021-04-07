@@ -1,13 +1,11 @@
-export type GameState = 'NOT_STARTED' | 'STARTED';
+import { Player } from './Player';
 
-export interface Player {
-  id: number;
-  username: string;
-}
+export type GameState = 'NOT_STARTED' | 'DRAWING';
 
 export interface GameRoom {
   id: string;
   hostId: number;
   state: GameState;
   players: Player[];
+  originalPhrase: string | undefined;
 }

@@ -7,6 +7,7 @@ import {
   selectGameRoomPlayers,
   selectGameRoomState,
   selectMe,
+  selectOriginalPhrase,
 } from './gameRoomSlice';
 
 interface Props {
@@ -19,6 +20,7 @@ export default function GameRoom({ socket }: Props) {
   const gameState = useAppSelector(selectGameRoomState);
   const me = useAppSelector(selectMe);
   const players = useAppSelector(selectGameRoomPlayers);
+  const originalPhrase = useAppSelector(selectOriginalPhrase);
 
   const handleStartGame = () => {
     socket.emit('START_GAME');
@@ -37,6 +39,12 @@ export default function GameRoom({ socket }: Props) {
       </ul>
       {me && me.id === hostId ? <button onClick={handleStartGame}>Start game</button> : <p>Waiting for the host</p>}
       {gameState && <p>{gameState}</p>}
+
+      {gameState === 'DRAWING' && (
+        <div>
+          <p>Please draw '{originalPhrase}'</p>
+        </div>
+      )}
     </div>
   );
 }

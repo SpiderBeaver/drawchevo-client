@@ -43,6 +43,7 @@ function App() {
           id: player.id,
           username: player.username,
         })),
+        originalPhrase: room.originalPhrase,
       };
       dispatch(roomStateUpdated({ newState: newState }));
     });

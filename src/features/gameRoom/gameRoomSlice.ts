@@ -23,6 +23,7 @@ const gameRoomSlice = createSlice({
         hostId: newRoomState.hostId,
         state: newRoomState.state,
         players: newRoomState.players,
+        originalPhrase: newRoomState.originalPhrase,
       };
     },
     playerIdAssigned: (state, action: PayloadAction<{ playerId: number }>) => {
@@ -33,7 +34,7 @@ const gameRoomSlice = createSlice({
     },
     gameStarted: (state) => {
       if (state.room) {
-        state.room.state = 'STARTED';
+        state.room.state = 'DRAWING';
       }
     },
   },
@@ -47,5 +48,6 @@ export const selectGameRoomState = (state: RootState) => state.gameRoom.room?.st
 export const selectGameRoomPlayers = (state: RootState) => state.gameRoom.room?.players;
 export const selectMe = (state: RootState) =>
   state.gameRoom.room?.players.find((p) => p.id === state.gameRoom.myPlayerId);
+export const selectOriginalPhrase = (state: RootState) => state.gameRoom.room?.originalPhrase;
 
 export default gameRoomSlice.reducer;
