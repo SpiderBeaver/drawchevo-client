@@ -4,5 +4,6 @@ export interface Player {
 
 export interface GameRoom {
   id: string;
+  hostId: number;
   players: Player[];
 }

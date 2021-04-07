@@ -4,10 +4,12 @@ import { GameRoom } from '../../domain/GameRoom';
 
 interface GameRoomState {
   room: GameRoom | null;
+  myPlayerId: number | null;
 }
 
 const initialState: GameRoomState = {
   room: null,
+  myPlayerId: null,
 };
 
 const gameRoomSlice = createSlice({
@@ -15,10 +17,15 @@ const gameRoomSlice = createSlice({
   initialState: initialState,
   reducers: {
     roomStateUpdated: (state, action: PayloadAction<{ newState: GameRoom }>) => {
+      const newRoomState = action.payload.newState;
       state.room = {
-        id: action.payload.newState.id,
-        players: action.payload.newState.players,
+        id: newRoomState.id,
+        hostId: newRoomState.hostId,
+        players: newRoomState.players,
       };
+    },
+    playerIdAssigned: (state, action: PayloadAction<{ playerId: number }>) => {
+      state.myPlayerId = action.payload.playerId;
     },
     playerJoined: (state, action: PayloadAction<{ playerId: number }>) => {
       state.room?.players.push({ id: action.payload.playerId });
@@ -26,9 +33,12 @@ const gameRoomSlice = createSlice({
   },
 });
 
-export const { roomStateUpdated, playerJoined } = gameRoomSlice.actions;
+export const { roomStateUpdated, playerIdAssigned, playerJoined } = gameRoomSlice.actions;
 
 export const selectGameRoomId = (state: RootState) => state.gameRoom.room?.id;
+export const selectGameRoomHostId = (state: RootState) => state.gameRoom.room?.hostId;
 export const selectGameRoomPlayers = (state: RootState) => state.gameRoom.room?.players;
+export const selectMe = (state: RootState) =>
+  state.gameRoom.room?.players.find((p) => p.id === state.gameRoom.myPlayerId);
 
 export default gameRoomSlice.reducer;

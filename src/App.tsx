@@ -3,10 +3,11 @@ import { io, Socket } from 'socket.io-client';
 import './App.css';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import TitleScreen from './components/TitleScreen';
+import { GameRoom } from './domain/GameRoom';
 import { GameRoomDto } from './dto/GameRoomDto';
 import { PlayerDto } from './dto/PlayerDto';
 import GameRoomComponent from './features/gameRoom/GameRoom';
-import { playerJoined, roomStateUpdated, selectGameRoomId } from './features/gameRoom/gameRoomSlice';
+import { playerIdAssigned, playerJoined, roomStateUpdated, selectGameRoomId } from './features/gameRoom/gameRoomSlice';
 
 function App() {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -28,11 +29,22 @@ function App() {
     });
 
     newSocket.on('UPDATE_ROOM_STATE', ({ room }: { room: GameRoomDto }) => {
-      dispatch(roomStateUpdated({ newState: room }));
+      const newState: GameRoom = {
+        id: room.id,
+        hostId: room.hostId,
+        players: room.players.map((player) => ({
+          id: player.id,
+        })),
+      };
+      dispatch(roomStateUpdated({ newState: newState }));
     });
 
     newSocket.on('PLAYER_JOINED', ({ player }: { player: PlayerDto }) => {
       dispatch(playerJoined({ playerId: player.id }));
+    });
+
+    newSocket.on('ASSING_PLAYER_ID', ({ playerId }: { playerId: number }) => {
+      dispatch(playerIdAssigned({ playerId: playerId }));
     });
 
     setSocket(newSocket);
