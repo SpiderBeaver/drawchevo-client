@@ -41,13 +41,14 @@ function App() {
         state: room.state,
         players: room.players.map((player) => ({
           id: player.id,
+          username: player.username,
         })),
       };
       dispatch(roomStateUpdated({ newState: newState }));
     });
 
     newSocket.on('PLAYER_JOINED', ({ player }: { player: PlayerDto }) => {
-      dispatch(playerJoined({ playerId: player.id }));
+      dispatch(playerJoined({ playerId: player.id, username: player.username }));
     });
 
     newSocket.on('ASSING_PLAYER_ID', ({ playerId }: { playerId: number }) => {

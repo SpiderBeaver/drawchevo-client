@@ -28,8 +28,8 @@ const gameRoomSlice = createSlice({
     playerIdAssigned: (state, action: PayloadAction<{ playerId: number }>) => {
       state.myPlayerId = action.payload.playerId;
     },
-    playerJoined: (state, action: PayloadAction<{ playerId: number }>) => {
-      state.room?.players.push({ id: action.payload.playerId });
+    playerJoined: (state, action: PayloadAction<{ playerId: number; username: string }>) => {
+      state.room?.players.push({ id: action.payload.playerId, username: action.payload.username });
     },
     gameStarted: (state) => {
       if (state.room) {

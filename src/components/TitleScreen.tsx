@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
 import { Socket } from 'socket.io-client';
+import CreateRoomForm from './CreateRoomForm';
+import JoinRoomForm from './JoinRoomForm';
 
 interface Props {
   socket: Socket;
 }
 
 export default function TitleScreen({ socket }: Props) {
-  const [roomId, setRoomId] = useState('');
+  const [showCreateRoomForm, setShowCreateRoomForm] = useState(false);
+  const [showJoinRoomForm, setShowJoinRoomForm] = useState(false);
 
   const handleCreateRoom = () => {
-    socket.emit('CREATE_ROOM');
+    setShowJoinRoomForm(false);
+    setShowCreateRoomForm(true);
   };
 
   const handleJoinRoom = () => {
-    socket.emit('JOIN_ROOM', { roomId: roomId });
+    setShowCreateRoomForm(false);
+    setShowJoinRoomForm(true);
   };
 
   return (
     <div>
       <button onClick={handleCreateRoom}>Create Room</button>
-      <input
-        type="text"
-        value={roomId}
-        onChange={(e) => {
-          setRoomId(e.target.value);
-        }}
-      ></input>
       <button onClick={handleJoinRoom}>Join Room</button>
+      <div>{showCreateRoomForm && <CreateRoomForm socket={socket}></CreateRoomForm>}</div>
+      <div>{showJoinRoomForm && <JoinRoomForm socket={socket}></JoinRoomForm>}</div>
     </div>
   );
 }
