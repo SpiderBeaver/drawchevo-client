@@ -1,6 +1,7 @@
 import React from 'react';
 import { Socket } from 'socket.io-client';
 import { useAppSelector } from '../../app/hooks';
+import DrawingBoard from '../../components/DrawingBoard';
 import {
   selectGameRoomHostId,
   selectGameRoomId,
@@ -43,6 +44,7 @@ export default function GameRoom({ socket }: Props) {
       {gameState === 'DRAWING' && (
         <div>
           <p>Please draw '{originalPhrase}'</p>
+          <DrawingBoard></DrawingBoard>
         </div>
       )}
     </div>
