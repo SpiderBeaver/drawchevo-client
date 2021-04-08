@@ -44,7 +44,11 @@ export default function GameRoom({ socket }: Props) {
       {gameState === 'DRAWING' && (
         <div>
           <p>Please draw '{originalPhrase}'</p>
-          <DrawingBoard></DrawingBoard>
+          <DrawingBoard
+            onDone={(shapes) => {
+              console.log(shapes);
+            }}
+          ></DrawingBoard>
         </div>
       )}
     </div>

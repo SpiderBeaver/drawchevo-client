@@ -1,101 +1,108 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import Drawing, { Dot, Line } from '../domain/Drawing';
+import DrawingCanvas from './DrawingCanvas';
 
 // TODO: This whole thing is probably very unoptimimed, buggy and uses bad react practices. It works for now but need a lot of rewriting.
 
-function calculateLocalCoordinates(canvas: HTMLCanvasElement, touch: React.Touch) {
-  const rect = canvas.getBoundingClientRect();
+//type Shape = Dot | Line;
+
+function calculateLocalCoordinates(board: HTMLDivElement, touch: React.Touch) {
+  const rect = board.getBoundingClientRect();
   const localX = touch.clientX - rect.x;
   const localY = touch.clientY - rect.y;
   return { x: localX, y: localY };
 }
 
-export default function DrawingBoard() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+interface Props {
+  onDone?: (drawing: Drawing) => void;
+}
 
-  const touches: React.Touch[] = [];
+export default function DrawingBoard({ onDone }: Props) {
+  const boardRef = useRef<HTMLDivElement>(null);
 
-  const handleTouchStart: React.TouchEventHandler<HTMLCanvasElement> = (e) => {
+  const [touches, setTouches] = useState<React.Touch[]>([]);
+  const [drawing, setDrawing] = useState<Drawing>({ shapes: [] });
+
+  const handleTouchStart: React.TouchEventHandler = (e) => {
     for (let i = 0; i < e.changedTouches.length; i++) {
       const touch = e.changedTouches.item(i);
-      touches.push(touch);
+      setTouches((touches) => [...touches, touch]);
     }
   };
 
-  const handleTouchMove: React.TouchEventHandler<HTMLCanvasElement> = (e) => {
-    for (let i = 0; i < e.changedTouches.length; i++) {
-      const touch = e.changedTouches.item(i);
-      const prevToushState = touches.find((t) => t.identifier === touch.identifier);
-      if (prevToushState) {
-        const canvas = canvasRef.current;
-        if (canvas) {
-          const context = canvas.getContext('2d');
-          if (context) {
-            context.beginPath();
-            const prevToushLocalCoords = calculateLocalCoordinates(canvas, prevToushState);
-            const currentTouchCoords = calculateLocalCoordinates(canvas, touch);
-            context.moveTo(prevToushLocalCoords.x, prevToushLocalCoords.y);
-            context.lineTo(currentTouchCoords.x, currentTouchCoords.y);
-            context.stroke();
-          }
-        }
-
-        const touchIndex = touches.indexOf(prevToushState);
-        touches[touchIndex] = touch;
-      }
-    }
-  };
-
-  const handleTouchEnd: React.TouchEventHandler<HTMLCanvasElement> = (e) => {
+  const handleTouchMove: React.TouchEventHandler = (e) => {
     for (let i = 0; i < e.changedTouches.length; i++) {
       const touch = e.changedTouches.item(i);
       const prevToushState = touches.find((t) => t.identifier === touch.identifier);
       if (prevToushState) {
-        const canvas = canvasRef.current;
-        if (canvas) {
-          const context = canvas.getContext('2d');
-          if (context) {
-            if (touch.clientX === prevToushState.clientX && touch.clientY === prevToushState.clientY) {
-              // Tap
-              const localCoords = calculateLocalCoordinates(canvas, touch);
-              context.fillRect(localCoords.x - 1, localCoords.y - 1, 2, 2);
-            } else {
-              context.beginPath();
-              const prevToushLocalCoords = calculateLocalCoordinates(canvas, prevToushState);
-              const currentTouchCoords = calculateLocalCoordinates(canvas, touch);
-              context.moveTo(prevToushLocalCoords.x, prevToushLocalCoords.y);
-              context.lineTo(currentTouchCoords.x, currentTouchCoords.y);
-              context.stroke();
-            }
-          }
-        }
+        const board = boardRef.current;
+        if (board != null) {
+          const prevToushLocalCoords = calculateLocalCoordinates(board, prevToushState);
+          const currentTouchCoords = calculateLocalCoordinates(board, touch);
 
-        const touchIndex = touches.indexOf(prevToushState);
-        touches.splice(touchIndex, 1);
+          const line = {
+            type: 'Line',
+            start: { x: prevToushLocalCoords.x, y: prevToushLocalCoords.y },
+            end: { x: currentTouchCoords.x, y: currentTouchCoords.y },
+          } as Line;
+          setDrawing((drawing) => ({ ...drawing, shapes: [...drawing.shapes, line] }));
+
+          drawing.shapes.push();
+
+          setTouches((touches) => {
+            const nextTouches = [...touches];
+            const touchIndex = nextTouches.indexOf(prevToushState);
+            nextTouches[touchIndex] = touch;
+            return nextTouches;
+          });
+        }
       }
     }
   };
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return;
-    }
+  const handleTouchEnd: React.TouchEventHandler = (e) => {
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const touch = e.changedTouches.item(i);
+      const prevToushState = touches.find((t) => t.identifier === touch.identifier);
+      if (prevToushState) {
+        const board = boardRef.current;
+        if (board != null) {
+          if (touch.clientX === prevToushState.clientX && touch.clientY === prevToushState.clientY) {
+            // Tap
+            const localCoords = calculateLocalCoordinates(board, touch);
 
-    const context = canvas.getContext('2d');
-    if (!context) {
-      return;
+            const dot = { type: 'Dot', point: { x: localCoords.x, y: localCoords.y } } as Dot;
+            setDrawing((drawing) => ({ ...drawing, shapes: [...drawing.shapes, dot] }));
+          } else {
+            const prevToushLocalCoords = calculateLocalCoordinates(board, prevToushState);
+            const currentTouchCoords = calculateLocalCoordinates(board, touch);
+            drawing.shapes.push({
+              start: { x: prevToushLocalCoords.x, y: prevToushLocalCoords.y },
+              end: { x: currentTouchCoords.x, y: currentTouchCoords.y },
+            } as Line);
+          }
+
+          const touchIndex = touches.indexOf(prevToushState);
+          touches.splice(touchIndex, 1);
+        }
+      }
     }
-  }, []);
+  };
+
+  const handleDoneButton = () => {
+    onDone?.(drawing);
+  };
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={200}
-      height={200}
+    <div
+      ref={boardRef}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      style={{ border: '1px solid black' }}
-    ></canvas>
+      style={{ margin: 'auto', display: 'flex' }}
+    >
+      <DrawingCanvas drawing={drawing}></DrawingCanvas>
+      <button onClick={handleDoneButton}>Done</button>
+    </div>
   );
 }
