@@ -30,17 +30,29 @@ const gameRoomSlice = createSlice({
       state.myPlayerId = action.payload.playerId;
     },
     playerJoined: (state, action: PayloadAction<{ playerId: number; username: string }>) => {
-      state.room?.players.push({ id: action.payload.playerId, username: action.payload.username });
+      state.room?.players.push({ id: action.payload.playerId, username: action.payload.username, status: 'idle' });
     },
     gameStarted: (state) => {
       if (state.room) {
         state.room.state = 'DRAWING';
       }
     },
+    playerFinihedDrawing: (state, action: PayloadAction<{ playerId: number }>) => {
+      const player = state.room?.players.find((p) => p.id === action.payload.playerId);
+      if (player) {
+        player.status = 'finished_drawing';
+      }
+    },
   },
 });
 
-export const { roomStateUpdated, playerIdAssigned, playerJoined, gameStarted } = gameRoomSlice.actions;
+export const {
+  roomStateUpdated,
+  playerIdAssigned,
+  playerJoined,
+  gameStarted,
+  playerFinihedDrawing,
+} = gameRoomSlice.actions;
 
 export const selectGameRoomId = (state: RootState) => state.gameRoom.room?.id;
 export const selectGameRoomHostId = (state: RootState) => state.gameRoom.room?.hostId;

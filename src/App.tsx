@@ -9,6 +9,7 @@ import { PlayerDto } from './dto/PlayerDto';
 import GameRoomComponent from './features/gameRoom/GameRoom';
 import {
   gameStarted,
+  playerFinihedDrawing,
   playerIdAssigned,
   playerJoined,
   roomStateUpdated,
@@ -42,6 +43,7 @@ function App() {
         players: room.players.map((player) => ({
           id: player.id,
           username: player.username,
+          status: player.status,
         })),
         originalPhrase: room.originalPhrase,
       };
@@ -58,6 +60,10 @@ function App() {
 
     newSocket.on('STARTED_GAME', () => {
       dispatch(gameStarted());
+    });
+
+    newSocket.on('PLAYER_FINISHED_DRAWING', ({ playerId }: { playerId: number }) => {
+      dispatch(playerFinihedDrawing({ playerId: playerId }));
     });
 
     setSocket(newSocket);

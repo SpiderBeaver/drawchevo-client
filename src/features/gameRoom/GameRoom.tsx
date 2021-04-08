@@ -42,7 +42,9 @@ export default function GameRoom({ socket }: Props) {
       <h3>Players</h3>
       <ul>
         {players?.map((player) => (
-          <li>{player.username}</li>
+          <li>
+            {player.username} ({player.status})
+          </li>
         ))}
       </ul>
       {me && me.id === hostId ? <button onClick={handleStartGame}>Start game</button> : <p>Waiting for the host</p>}
