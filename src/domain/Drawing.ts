@@ -1,11 +1,11 @@
-type ShapeType = 'Dot' | 'Line';
+export type ShapeType = 'Dot' | 'Line';
 
-interface Point {
+export interface Point {
   x: number;
   y: number;
 }
 
-interface Shape {
+export interface Shape {
   type: ShapeType;
 }
 

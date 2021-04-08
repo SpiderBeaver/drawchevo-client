@@ -2,6 +2,8 @@ import React from 'react';
 import { Socket } from 'socket.io-client';
 import { useAppSelector } from '../../app/hooks';
 import DrawingBoard from '../../components/DrawingBoard';
+import Drawing from '../../domain/Drawing';
+import { drawingToDto } from '../../dto/DrawingDto';
 import {
   selectGameRoomHostId,
   selectGameRoomId,
@@ -27,6 +29,11 @@ export default function GameRoom({ socket }: Props) {
     socket.emit('START_GAME');
   };
 
+  const handleDrawingDone = (drawing: Drawing) => {
+    const drawingDto = drawingToDto(drawing);
+    socket.emit('DRAWING_DONE', { drawing: drawingDto });
+  };
+
   return (
     <div>
       <h2>
@@ -44,11 +51,7 @@ export default function GameRoom({ socket }: Props) {
       {gameState === 'DRAWING' && (
         <div>
           <p>Please draw '{originalPhrase}'</p>
-          <DrawingBoard
-            onDone={(shapes) => {
-              console.log(shapes);
-            }}
-          ></DrawingBoard>
+          <DrawingBoard onDone={handleDrawingDone}></DrawingBoard>
         </div>
       )}
     </div>
