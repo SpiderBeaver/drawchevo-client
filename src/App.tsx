@@ -4,6 +4,7 @@ import './App.css';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import TitleScreen from './components/TitleScreen';
 import { GameRoom } from './domain/GameRoom';
+import DrawingDto, { drawingFromDto } from './dto/DrawingDto';
 import { GameRoomDto } from './dto/GameRoomDto';
 import { PlayerDto } from './dto/PlayerDto';
 import GameRoomComponent from './features/gameRoom/GameRoom';
@@ -14,6 +15,7 @@ import {
   playerJoined,
   roomStateUpdated,
   selectGameRoomId,
+  startMakingFakePhrases,
 } from './features/gameRoom/gameRoomSlice';
 
 function App() {
@@ -46,6 +48,7 @@ function App() {
           status: player.status,
         })),
         originalPhrase: room.originalPhrase,
+        currentDrawing: null,
       };
       dispatch(roomStateUpdated({ newState: newState }));
     });
@@ -64,6 +67,11 @@ function App() {
 
     newSocket.on('PLAYER_FINISHED_DRAWING', ({ playerId }: { playerId: number }) => {
       dispatch(playerFinihedDrawing({ playerId: playerId }));
+    });
+
+    newSocket.on('START_MAKING_FAKE_PHRASES', ({ drawing: drawingDto }: { drawing: DrawingDto }) => {
+      const drawing = drawingFromDto(drawingDto);
+      dispatch(startMakingFakePhrases({ drawing: drawing }));
     });
 
     setSocket(newSocket);

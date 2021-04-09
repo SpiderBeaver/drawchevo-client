@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
+import Drawing from '../../domain/Drawing';
 import { GameRoom } from '../../domain/GameRoom';
 
 interface GameRoomState {
@@ -24,6 +25,7 @@ const gameRoomSlice = createSlice({
         state: newRoomState.state,
         players: newRoomState.players,
         originalPhrase: newRoomState.originalPhrase,
+        currentDrawing: null,
       };
     },
     playerIdAssigned: (state, action: PayloadAction<{ playerId: number }>) => {
@@ -43,6 +45,12 @@ const gameRoomSlice = createSlice({
         player.status = 'finished_drawing';
       }
     },
+    startMakingFakePhrases: (state, action: PayloadAction<{ drawing: Drawing }>) => {
+      if (state.room) {
+        state.room.state = 'MAKING_FAKE_PHRASES';
+        state.room.currentDrawing = action.payload.drawing;
+      }
+    },
   },
 });
 
@@ -52,6 +60,7 @@ export const {
   playerJoined,
   gameStarted,
   playerFinihedDrawing,
+  startMakingFakePhrases,
 } = gameRoomSlice.actions;
 
 export const selectGameRoomId = (state: RootState) => state.gameRoom.room?.id;
@@ -61,5 +70,6 @@ export const selectGameRoomPlayers = (state: RootState) => state.gameRoom.room?.
 export const selectMe = (state: RootState) =>
   state.gameRoom.room?.players.find((p) => p.id === state.gameRoom.myPlayerId);
 export const selectOriginalPhrase = (state: RootState) => state.gameRoom.room?.originalPhrase;
+export const selectCurrentDrawing = (state: RootState) => state.gameRoom.room?.currentDrawing;
 
 export default gameRoomSlice.reducer;

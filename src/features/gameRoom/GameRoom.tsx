@@ -2,9 +2,12 @@ import React from 'react';
 import { Socket } from 'socket.io-client';
 import { useAppSelector } from '../../app/hooks';
 import DrawingBoard from '../../components/DrawingBoard';
+import DrawingCanvas from '../../components/DrawingCanvas';
+import FakePhraseForm from '../../components/FakePhraseForm';
 import Drawing from '../../domain/Drawing';
 import { drawingToDto } from '../../dto/DrawingDto';
 import {
+  selectCurrentDrawing,
   selectGameRoomHostId,
   selectGameRoomId,
   selectGameRoomPlayers,
@@ -24,6 +27,7 @@ export default function GameRoom({ socket }: Props) {
   const me = useAppSelector(selectMe);
   const players = useAppSelector(selectGameRoomPlayers);
   const originalPhrase = useAppSelector(selectOriginalPhrase);
+  const currentDrawing = useAppSelector(selectCurrentDrawing);
 
   const handleStartGame = () => {
     socket.emit('START_GAME');
@@ -50,12 +54,24 @@ export default function GameRoom({ socket }: Props) {
       {me && me.id === hostId ? <button onClick={handleStartGame}>Start game</button> : <p>Waiting for the host</p>}
       {gameState && <p>{gameState}</p>}
 
-      {gameState === 'DRAWING' && (
-        <div>
-          <p>Please draw '{originalPhrase}'</p>
-          <DrawingBoard onDone={handleDrawingDone}></DrawingBoard>
-        </div>
-      )}
+      {(() => {
+        switch (gameState) {
+          case 'DRAWING':
+            return (
+              <div>
+                <p>Please draw '{originalPhrase}'</p>
+                <DrawingBoard onDone={handleDrawingDone}></DrawingBoard>
+              </div>
+            );
+          case 'MAKING_FAKE_PHRASES':
+            return (
+              <div>
+                {currentDrawing && <DrawingCanvas drawing={currentDrawing}></DrawingCanvas>}
+                <FakePhraseForm></FakePhraseForm>
+              </div>
+            );
+        }
+      })()}
     </div>
   );
 }
