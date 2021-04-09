@@ -77,6 +77,7 @@ export default function DrawingBoard({ onDone }: Props) {
             const prevToushLocalCoords = calculateLocalCoordinates(board, prevToushState);
             const currentTouchCoords = calculateLocalCoordinates(board, touch);
             drawing.shapes.push({
+              type: 'Line',
               start: { x: prevToushLocalCoords.x, y: prevToushLocalCoords.y },
               end: { x: currentTouchCoords.x, y: currentTouchCoords.y },
             } as Line);
