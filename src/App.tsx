@@ -11,6 +11,7 @@ import GameRoomComponent from './features/gameRoom/GameRoom';
 import {
   gameStarted,
   playerFinihedDrawing,
+  playerFinishedMakingFakePhrase,
   playerIdAssigned,
   playerJoined,
   roomStateUpdated,
@@ -72,6 +73,10 @@ function App() {
     newSocket.on('START_MAKING_FAKE_PHRASES', ({ drawing: drawingDto }: { drawing: DrawingDto }) => {
       const drawing = drawingFromDto(drawingDto);
       dispatch(startMakingFakePhrases({ drawing: drawing }));
+    });
+
+    newSocket.on('PLAYER_FINISHED_MAKING_FAKE_PHRASE', ({ playerId }: { playerId: number }) => {
+      dispatch(playerFinishedMakingFakePhrase({ playerId: playerId }));
     });
 
     setSocket(newSocket);

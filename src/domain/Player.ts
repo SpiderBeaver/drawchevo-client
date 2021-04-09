@@ -1,4 +1,9 @@
-export type PlayerStatus = 'idle' | 'drawing' | 'finished_drawing';
+export type PlayerStatus =
+  | 'idle'
+  | 'drawing'
+  | 'finished_drawing'
+  | 'making_fake_phrase'
+  | 'finished_making_fake_phrase';
 
 export interface Player {
   id: number;

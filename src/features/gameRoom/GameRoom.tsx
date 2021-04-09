@@ -67,7 +67,7 @@ export default function GameRoom({ socket }: Props) {
             return (
               <div>
                 {currentDrawing && <DrawingCanvas drawing={currentDrawing}></DrawingCanvas>}
-                <FakePhraseForm></FakePhraseForm>
+                <FakePhraseForm socket={socket}></FakePhraseForm>
               </div>
             );
         }

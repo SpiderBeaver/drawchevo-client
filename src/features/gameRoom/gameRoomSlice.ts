@@ -49,6 +49,15 @@ const gameRoomSlice = createSlice({
       if (state.room) {
         state.room.state = 'MAKING_FAKE_PHRASES';
         state.room.currentDrawing = action.payload.drawing;
+        state.room.players.forEach((p) => (p.status = 'making_fake_phrase'));
+      }
+    },
+    playerFinishedMakingFakePhrase: (state, action: PayloadAction<{ playerId: number }>) => {
+      if (state.room) {
+        const player = state.room.players.find((p) => p.id === action.payload.playerId);
+        if (player) {
+          player.status = 'finished_making_fake_phrase';
+        }
       }
     },
   },
@@ -61,6 +70,7 @@ export const {
   gameStarted,
   playerFinihedDrawing,
   startMakingFakePhrases,
+  playerFinishedMakingFakePhrase,
 } = gameRoomSlice.actions;
 
 export const selectGameRoomId = (state: RootState) => state.gameRoom.room?.id;
