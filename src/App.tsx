@@ -17,6 +17,7 @@ import {
   roomStateUpdated,
   selectGameRoomId,
   startMakingFakePhrases,
+  startVoting,
 } from './features/gameRoom/gameRoomSlice';
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
         })),
         originalPhrase: room.originalPhrase,
         currentDrawing: null,
+        votingOptions: null,
       };
       dispatch(roomStateUpdated({ newState: newState }));
     });
@@ -77,6 +79,10 @@ function App() {
 
     newSocket.on('PLAYER_FINISHED_MAKING_FAKE_PHRASE', ({ playerId }: { playerId: number }) => {
       dispatch(playerFinishedMakingFakePhrase({ playerId: playerId }));
+    });
+
+    newSocket.on('START_VOTING', ({ options }: { options: string[] }) => {
+      dispatch(startVoting({ options: options }));
     });
 
     setSocket(newSocket);

@@ -25,7 +25,8 @@ const gameRoomSlice = createSlice({
         state: newRoomState.state,
         players: newRoomState.players,
         originalPhrase: newRoomState.originalPhrase,
-        currentDrawing: null,
+        currentDrawing: newRoomState.currentDrawing,
+        votingOptions: newRoomState.votingOptions,
       };
     },
     playerIdAssigned: (state, action: PayloadAction<{ playerId: number }>) => {
@@ -60,6 +61,15 @@ const gameRoomSlice = createSlice({
         }
       }
     },
+    startVoting: (state, action: PayloadAction<{ options: string[] }>) => {
+      if (state.room) {
+        state.room.state = 'VOTING';
+        state.room.votingOptions = action.payload.options;
+        state.room.players.forEach((player) => {
+          player.status = 'voting';
+        });
+      }
+    },
   },
 });
 
@@ -71,6 +81,7 @@ export const {
   playerFinihedDrawing,
   startMakingFakePhrases,
   playerFinishedMakingFakePhrase,
+  startVoting,
 } = gameRoomSlice.actions;
 
 export const selectGameRoomId = (state: RootState) => state.gameRoom.room?.id;
@@ -81,5 +92,6 @@ export const selectMe = (state: RootState) =>
   state.gameRoom.room?.players.find((p) => p.id === state.gameRoom.myPlayerId);
 export const selectOriginalPhrase = (state: RootState) => state.gameRoom.room?.originalPhrase;
 export const selectCurrentDrawing = (state: RootState) => state.gameRoom.room?.currentDrawing;
+export const selectVotingOptions = (state: RootState) => state.gameRoom.room?.votingOptions;
 
 export default gameRoomSlice.reducer;
