@@ -5,7 +5,7 @@ interface Props {
   drawing: Drawing;
 }
 
-// TODO: I don't like that this gets rerendered\redrawn on every drawing addition. Should think about doing smt about it.
+// TODO: I don't like that this gets rerendered\redrawn on every drawing addition (does it?). Should think about doing smt about it.
 export default function DrawingCanvas({ drawing }: Props) {
   const canvasRef = useCallback(
     (canvas: HTMLCanvasElement | null) => {
@@ -17,6 +17,8 @@ export default function DrawingCanvas({ drawing }: Props) {
       if (!context) {
         return;
       }
+
+      context.clearRect(0, 0, canvas.width, canvas.height);
 
       drawing.shapes.forEach((shape) => {
         if (isDot(shape)) {
