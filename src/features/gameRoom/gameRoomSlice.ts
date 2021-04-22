@@ -70,6 +70,14 @@ const gameRoomSlice = createSlice({
         });
       }
     },
+    playerFinishedVoting: (state, action: PayloadAction<{ playerId: number }>) => {
+      if (state.room) {
+        const player = state.room.players.find((player) => player.id === action.payload.playerId);
+        if (player) {
+          player.status = 'finished_voting';
+        }
+      }
+    },
   },
 });
 
@@ -82,6 +90,7 @@ export const {
   startMakingFakePhrases,
   playerFinishedMakingFakePhrase,
   startVoting,
+  playerFinishedVoting,
 } = gameRoomSlice.actions;
 
 export const selectGameRoomId = (state: RootState) => state.gameRoom.room?.id;

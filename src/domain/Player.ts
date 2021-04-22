@@ -4,7 +4,8 @@ export type PlayerStatus =
   | 'finished_drawing'
   | 'making_fake_phrase'
   | 'finished_making_fake_phrase'
-  | 'voting';
+  | 'voting'
+  | 'finished_voting';
 
 export interface Player {
   id: number;

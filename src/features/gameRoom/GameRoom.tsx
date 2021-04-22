@@ -4,6 +4,7 @@ import { useAppSelector } from '../../app/hooks';
 import DrawingBoard from '../../components/DrawingBoard';
 import DrawingCanvas from '../../components/DrawingCanvas';
 import FakePhraseForm from '../../components/FakePhraseForm';
+import PhrasesVotingList from '../../components/PhrasesVotingList';
 import Drawing from '../../domain/Drawing';
 import { drawingToDto } from '../../dto/DrawingDto';
 import {
@@ -76,13 +77,7 @@ export default function GameRoom({ socket }: Props) {
             return (
               <div>
                 {currentDrawing && <DrawingCanvas drawing={currentDrawing}></DrawingCanvas>}
-                {votingOptions && (
-                  <ul>
-                    {votingOptions.map((option) => (
-                      <li>{option}</li>
-                    ))}
-                  </ul>
-                )}
+                {votingOptions && <PhrasesVotingList socket={socket} options={votingOptions}></PhrasesVotingList>}
               </div>
             );
         }

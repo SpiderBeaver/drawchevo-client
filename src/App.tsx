@@ -12,6 +12,7 @@ import {
   gameStarted,
   playerFinihedDrawing,
   playerFinishedMakingFakePhrase,
+  playerFinishedVoting,
   playerIdAssigned,
   playerJoined,
   roomStateUpdated,
@@ -83,6 +84,10 @@ function App() {
 
     newSocket.on('START_VOTING', ({ options }: { options: string[] }) => {
       dispatch(startVoting({ options: options }));
+    });
+
+    newSocket.on('PLAYER_FINISHED_VOTING', ({ playerId }: { playerId: number }) => {
+      dispatch(playerFinishedVoting({ playerId: playerId }));
     });
 
     setSocket(newSocket);
