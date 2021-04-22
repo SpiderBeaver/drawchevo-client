@@ -15,6 +15,7 @@ import {
   selectGameRoomState,
   selectMe,
   selectOriginalPhrase,
+  selectVotes,
   selectVotingOptions,
 } from './gameRoomSlice';
 
@@ -31,6 +32,7 @@ export default function GameRoom({ socket }: Props) {
   const originalPhrase = useAppSelector(selectOriginalPhrase);
   const currentDrawing = useAppSelector(selectCurrentDrawing);
   const votingOptions = useAppSelector(selectVotingOptions);
+  const votes = useAppSelector(selectVotes);
 
   const handleStartGame = () => {
     socket.emit('START_GAME');
@@ -78,6 +80,21 @@ export default function GameRoom({ socket }: Props) {
               <div>
                 {currentDrawing && <DrawingCanvas drawing={currentDrawing}></DrawingCanvas>}
                 {votingOptions && <PhrasesVotingList socket={socket} options={votingOptions}></PhrasesVotingList>}
+              </div>
+            );
+          case 'SHOWING_VOTING_RESULTS':
+            return (
+              <div>
+                <p>Original: {originalPhrase}</p>
+                {votes && (
+                  <ul>
+                    {votes.map((vote) => (
+                      <li>
+                        {vote.playerId} - {vote.phrase}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             );
         }

@@ -17,6 +17,7 @@ import {
   playerJoined,
   roomStateUpdated,
   selectGameRoomId,
+  showVotingResults,
   startMakingFakePhrases,
   startVoting,
 } from './features/gameRoom/gameRoomSlice';
@@ -53,6 +54,7 @@ function App() {
         originalPhrase: room.originalPhrase,
         currentDrawing: null,
         votingOptions: null,
+        votes: [],
       };
       dispatch(roomStateUpdated({ newState: newState }));
     });
@@ -88,6 +90,17 @@ function App() {
 
     newSocket.on('PLAYER_FINISHED_VOTING', ({ playerId }: { playerId: number }) => {
       dispatch(playerFinishedVoting({ playerId: playerId }));
+    });
+
+    interface ShowVotingResultsParams {
+      votes: {
+        playerId: number;
+        phrase: string;
+      }[];
+      originalPhrase: string;
+    }
+    newSocket.on('SHOW_VOTING_RESULTS', ({ votes, originalPhrase }: ShowVotingResultsParams) => {
+      dispatch(showVotingResults({ originalPhrase: originalPhrase, votes: votes }));
     });
 
     setSocket(newSocket);

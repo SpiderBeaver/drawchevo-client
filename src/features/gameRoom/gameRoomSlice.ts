@@ -24,9 +24,11 @@ const gameRoomSlice = createSlice({
         hostId: newRoomState.hostId,
         state: newRoomState.state,
         players: newRoomState.players,
+        // TODO: I don't like that it means different things depending on game state.
         originalPhrase: newRoomState.originalPhrase,
         currentDrawing: newRoomState.currentDrawing,
         votingOptions: newRoomState.votingOptions,
+        votes: newRoomState.votes,
       };
     },
     playerIdAssigned: (state, action: PayloadAction<{ playerId: number }>) => {
@@ -78,6 +80,22 @@ const gameRoomSlice = createSlice({
         }
       }
     },
+    showVotingResults: (
+      state,
+      action: PayloadAction<{
+        votes: {
+          playerId: number;
+          phrase: string;
+        }[];
+        originalPhrase: string;
+      }>
+    ) => {
+      if (state.room) {
+        state.room.state = 'SHOWING_VOTING_RESULTS';
+        state.room.originalPhrase = action.payload.originalPhrase;
+        state.room.votes = action.payload.votes;
+      }
+    },
   },
 });
 
@@ -91,6 +109,7 @@ export const {
   playerFinishedMakingFakePhrase,
   startVoting,
   playerFinishedVoting,
+  showVotingResults,
 } = gameRoomSlice.actions;
 
 export const selectGameRoomId = (state: RootState) => state.gameRoom.room?.id;
@@ -102,5 +121,6 @@ export const selectMe = (state: RootState) =>
 export const selectOriginalPhrase = (state: RootState) => state.gameRoom.room?.originalPhrase;
 export const selectCurrentDrawing = (state: RootState) => state.gameRoom.room?.currentDrawing;
 export const selectVotingOptions = (state: RootState) => state.gameRoom.room?.votingOptions;
+export const selectVotes = (state: RootState) => state.gameRoom.room?.votes;
 
 export default gameRoomSlice.reducer;

@@ -1,7 +1,7 @@
 import Drawing from './Drawing';
 import { Player } from './Player';
 
-export type GameState = 'NOT_STARTED' | 'DRAWING' | 'MAKING_FAKE_PHRASES' | 'VOTING';
+export type GameState = 'NOT_STARTED' | 'DRAWING' | 'MAKING_FAKE_PHRASES' | 'VOTING' | 'SHOWING_VOTING_RESULTS';
 
 export interface GameRoom {
   id: string;
@@ -11,4 +11,5 @@ export interface GameRoom {
   originalPhrase: string | null;
   currentDrawing: Drawing | null;
   votingOptions: string[] | null;
+  votes: { playerId: number; phrase: string }[];
 }
