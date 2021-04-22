@@ -5,6 +5,7 @@ import DrawingBoard from '../../components/DrawingBoard';
 import DrawingCanvas from '../../components/DrawingCanvas';
 import FakePhraseForm from '../../components/FakePhraseForm';
 import PhrasesVotingList from '../../components/PhrasesVotingList';
+import VotingResultsScreen from '../../components/VotingResultsScreen';
 import Drawing from '../../domain/Drawing';
 import { drawingToDto } from '../../dto/DrawingDto';
 import {
@@ -83,20 +84,7 @@ export default function GameRoom({ socket }: Props) {
               </div>
             );
           case 'SHOWING_VOTING_RESULTS':
-            return (
-              <div>
-                <p>Original: {originalPhrase}</p>
-                {votes && (
-                  <ul>
-                    {votes.map((vote) => (
-                      <li>
-                        {vote.playerId} - {vote.phrase}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            );
+            return <VotingResultsScreen socket={socket}></VotingResultsScreen>;
         }
       })()}
     </div>
