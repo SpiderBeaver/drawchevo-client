@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Socket } from 'socket.io-client';
 import styled from 'styled-components/macro';
 import ActionButton from './ActionButton';
-import CreateRoomForm from './CreateRoomForm';
+import CreateRoomScreen from './CreateRoomScreen';
 import JoinRoomForm from './JoinRoomForm';
 
 const TitleScreenContainer = styled.div`
@@ -48,15 +48,26 @@ export default function TitleScreen({ socket }: Props) {
   };
 
   return (
-    <TitleScreenContainer>
-      <Logo>DrawChevo</Logo>
-      <Buttons>
-        <TitleButton onClick={handleCreateRoom}>Create Room</TitleButton>
-        <TitleButton onClick={handleJoinRoom}>Join Room</TitleButton>
-      </Buttons>
+    <>
+      {!showCreateRoomForm && !showJoinRoomForm && (
+        <TitleScreenContainer>
+          <Logo>DrawChevo</Logo>
+          <Buttons>
+            <TitleButton onClick={handleCreateRoom}>Create Room</TitleButton>
+            <TitleButton onClick={handleJoinRoom}>Join Room</TitleButton>
+          </Buttons>
+        </TitleScreenContainer>
+      )}
 
-      {showCreateRoomForm && <CreateRoomForm socket={socket}></CreateRoomForm>}
+      {showCreateRoomForm && (
+        <CreateRoomScreen
+          socket={socket}
+          onBack={() => {
+            setShowCreateRoomForm(false);
+          }}
+        ></CreateRoomScreen>
+      )}
       {showJoinRoomForm && <JoinRoomForm socket={socket}></JoinRoomForm>}
-    </TitleScreenContainer>
+    </>
   );
 }
