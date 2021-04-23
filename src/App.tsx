@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import './App.css';
+import styled from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import TitleScreen from './components/TitleScreen';
 import { GameRoom } from './domain/GameRoom';
@@ -21,6 +21,18 @@ import {
   startMakingFakePhrases,
   startVoting,
 } from './features/gameRoom/gameRoomSlice';
+
+const Background = styled.div`
+  height: 100%;
+  background-color: black;
+`;
+
+const Container = styled.div`
+  max-width: 40em;
+  margin: auto;
+  background-color: #292f36;
+  height: 100%;
+`;
 
 function App() {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -107,14 +119,16 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="App">
-      {socket &&
-        (roomId !== undefined ? (
-          <GameRoomComponent socket={socket}></GameRoomComponent>
-        ) : (
-          <TitleScreen socket={socket}></TitleScreen>
-        ))}
-    </div>
+    <Background>
+      <Container>
+        {socket &&
+          (roomId !== undefined ? (
+            <GameRoomComponent socket={socket}></GameRoomComponent>
+          ) : (
+            <TitleScreen socket={socket}></TitleScreen>
+          ))}
+      </Container>
+    </Background>
   );
 }
 
