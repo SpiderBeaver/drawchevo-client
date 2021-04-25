@@ -4,6 +4,7 @@ import { useAppSelector } from '../../app/hooks';
 import DrawingBoard from '../../components/DrawingBoard';
 import DrawingCanvas from '../../components/DrawingCanvas';
 import FakePhraseForm from '../../components/FakePhraseForm';
+import LobbyScreen from '../../components/LobbyScreen';
 import PhrasesVotingList from '../../components/PhrasesVotingList';
 import VotingResultsScreen from '../../components/VotingResultsScreen';
 import Drawing from '../../domain/Drawing';
@@ -25,19 +26,10 @@ interface Props {
 }
 
 export default function GameRoom({ socket }: Props) {
-  const roomId = useAppSelector(selectGameRoomId);
-  const hostId = useAppSelector(selectGameRoomHostId);
   const gameState = useAppSelector(selectGameRoomState);
-  const me = useAppSelector(selectMe);
-  const players = useAppSelector(selectGameRoomPlayers);
   const originalPhrase = useAppSelector(selectOriginalPhrase);
   const currentDrawing = useAppSelector(selectCurrentDrawing);
   const votingOptions = useAppSelector(selectVotingOptions);
-  const votes = useAppSelector(selectVotes);
-
-  const handleStartGame = () => {
-    socket.emit('START_GAME');
-  };
 
   const handleDrawingDone = (drawing: Drawing) => {
     const drawingDto = drawingToDto(drawing);
@@ -45,23 +37,11 @@ export default function GameRoom({ socket }: Props) {
   };
 
   return (
-    <div>
-      <h2>
-        Welcome to room {roomId} {me?.username}
-      </h2>
-      <h3>Players</h3>
-      <ul>
-        {players?.map((player) => (
-          <li>
-            {player.username} ({player.status})
-          </li>
-        ))}
-      </ul>
-      {me && me.id === hostId ? <button onClick={handleStartGame}>Start game</button> : <p>Waiting for the host</p>}
-      {gameState && <p>{gameState}</p>}
-
+    <>
       {(() => {
         switch (gameState) {
+          case 'NOT_STARTED':
+            return <LobbyScreen socket={socket}></LobbyScreen>;
           case 'DRAWING':
             return (
               <div>
@@ -87,6 +67,6 @@ export default function GameRoom({ socket }: Props) {
             return <VotingResultsScreen socket={socket}></VotingResultsScreen>;
         }
       })()}
-    </div>
+    </>
   );
 }
