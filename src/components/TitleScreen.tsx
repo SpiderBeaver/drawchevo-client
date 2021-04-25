@@ -67,7 +67,14 @@ export default function TitleScreen({ socket }: Props) {
           }}
         ></CreateRoomScreen>
       )}
-      {showJoinRoomForm && <JoinRoomForm socket={socket}></JoinRoomForm>}
+      {showJoinRoomForm && (
+        <JoinRoomForm
+          socket={socket}
+          onBack={() => {
+            setShowJoinRoomForm(false);
+          }}
+        ></JoinRoomForm>
+      )}
     </>
   );
 }
