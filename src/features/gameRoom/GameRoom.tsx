@@ -3,6 +3,7 @@ import { Socket } from 'socket.io-client';
 import { useAppSelector } from '../../app/hooks';
 import DrawingBoard from '../../components/DrawingBoard';
 import DrawingCanvas from '../../components/DrawingCanvas';
+import DrawingScreen from '../../components/DrawingScreen';
 import FakePhraseForm from '../../components/FakePhraseForm';
 import LobbyScreen from '../../components/LobbyScreen';
 import PhrasesVotingList from '../../components/PhrasesVotingList';
@@ -43,23 +44,18 @@ export default function GameRoom({ socket }: Props) {
           case 'NOT_STARTED':
             return <LobbyScreen socket={socket}></LobbyScreen>;
           case 'DRAWING':
-            return (
-              <div>
-                <p>Please draw '{originalPhrase}'</p>
-                <DrawingBoard onDone={handleDrawingDone}></DrawingBoard>
-              </div>
-            );
+            return <DrawingScreen socket={socket}></DrawingScreen>;
           case 'MAKING_FAKE_PHRASES':
             return (
               <div>
-                {currentDrawing && <DrawingCanvas drawing={currentDrawing}></DrawingCanvas>}
+                {currentDrawing && <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>}
                 <FakePhraseForm socket={socket}></FakePhraseForm>
               </div>
             );
           case 'VOTING':
             return (
               <div>
-                {currentDrawing && <DrawingCanvas drawing={currentDrawing}></DrawingCanvas>}
+                {currentDrawing && <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>}
                 {votingOptions && <PhrasesVotingList socket={socket} options={votingOptions}></PhrasesVotingList>}
               </div>
             );

@@ -1,12 +1,22 @@
 import React, { useCallback } from 'react';
+import styled from 'styled-components/macro';
 import Drawing, { isDot, isLine } from '../domain/Drawing';
+
+const Canvas = styled.canvas`
+  width: 100%;
+  touch-action: none;
+  background-color: #fff;
+  border: 2px solid #191d21;
+`;
 
 interface Props {
   drawing: Drawing;
+  /** Drawing should be a square with a side of this size. */
+  size: number;
 }
 
 // TODO: I don't like that this gets rerendered\redrawn on every drawing addition (does it?). Should think about doing smt about it.
-export default function DrawingCanvas({ drawing }: Props) {
+export default function DrawingCanvas({ drawing, size }: Props) {
   const canvasRef = useCallback(
     (canvas: HTMLCanvasElement | null) => {
       if (!canvas) {
@@ -34,5 +44,5 @@ export default function DrawingCanvas({ drawing }: Props) {
     [drawing]
   );
 
-  return <canvas ref={canvasRef} width={200} height={200} style={{ border: '1px solid black' }}></canvas>;
+  return <Canvas ref={canvasRef} width={size} height={size}></Canvas>;
 }
