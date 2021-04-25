@@ -4,7 +4,7 @@ import { useAppSelector } from '../../app/hooks';
 import DrawingBoard from '../../components/DrawingBoard';
 import DrawingCanvas from '../../components/DrawingCanvas';
 import DrawingScreen from '../../components/DrawingScreen';
-import FakePhraseForm from '../../components/FakePhraseForm';
+import FakePhraseScreen from '../../components/FakePhraseScreen';
 import LobbyScreen from '../../components/LobbyScreen';
 import PhrasesVotingList from '../../components/PhrasesVotingList';
 import VotingResultsScreen from '../../components/VotingResultsScreen';
@@ -46,12 +46,7 @@ export default function GameRoom({ socket }: Props) {
           case 'DRAWING':
             return <DrawingScreen socket={socket}></DrawingScreen>;
           case 'MAKING_FAKE_PHRASES':
-            return (
-              <div>
-                {currentDrawing && <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>}
-                <FakePhraseForm socket={socket}></FakePhraseForm>
-              </div>
-            );
+            return <FakePhraseScreen socket={socket}></FakePhraseScreen>;
           case 'VOTING':
             return (
               <div>
