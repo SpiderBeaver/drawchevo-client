@@ -43,7 +43,8 @@ function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const newSocket = io('ws://192.168.1.7:3001');
+    // const newSocket = io('ws://192.168.1.7:3001');
+    const newSocket = io('wss://drawchevo.spiderbeaver.com/', { path: '/server/socket.io' });
 
     newSocket.on('connect', () => {
       console.log(`Connected ${newSocket.id}`);
