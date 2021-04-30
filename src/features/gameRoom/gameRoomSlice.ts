@@ -28,6 +28,7 @@ const gameRoomSlice = createSlice({
         players: newRoomState.players,
         // TODO: I don't like that it means different things depending on game state.
         originalPhrase: newRoomState.originalPhrase,
+        currentPlayerId: newRoomState.currentPlayerId,
         currentDrawing: newRoomState.currentDrawing,
         votingOptions: newRoomState.votingOptions,
         votes: newRoomState.votes,
@@ -50,9 +51,10 @@ const gameRoomSlice = createSlice({
         player.status = 'finished_drawing';
       }
     },
-    startMakingFakePhrases: (state, action: PayloadAction<{ drawing: Drawing }>) => {
+    startMakingFakePhrases: (state, action: PayloadAction<{ currentPlayerId: number; drawing: Drawing }>) => {
       if (state.room) {
         state.room.state = 'MAKING_FAKE_PHRASES';
+        state.room.currentPlayerId = action.payload.currentPlayerId;
         state.room.currentDrawing = action.payload.drawing;
         state.room.players.forEach((p) => (p.status = 'making_fake_phrase'));
       }
@@ -112,6 +114,7 @@ export const selectGameRoomPlayers = (state: RootState) => state.gameRoom.room?.
 export const selectMe = (state: RootState) =>
   state.gameRoom.room?.players.find((p) => p.id === state.gameRoom.myPlayerId);
 export const selectOriginalPhrase = (state: RootState) => state.gameRoom.room?.originalPhrase;
+export const selectCurrentPlayerId = (state: RootState) => state.gameRoom.room?.currentPlayerId;
 export const selectCurrentDrawing = (state: RootState) => state.gameRoom.room?.currentDrawing;
 export const selectVotingOptions = (state: RootState) => state.gameRoom.room?.votingOptions;
 export const selectVotes = (state: RootState) => state.gameRoom.room?.votes;

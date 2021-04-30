@@ -11,6 +11,7 @@ export interface GameRoom {
   state: GameState;
   players: Player[];
   originalPhrase: Phrase | null;
+  currentPlayerId: number | null;
   currentDrawing: Drawing | null;
   votingOptions: Phrase[] | null;
   votes: Vote[];

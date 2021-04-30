@@ -69,6 +69,7 @@ function App() {
         })),
         originalPhrase: room.originalPhrase ? phraseFromDto(room.originalPhrase) : null,
         // TODO: This also needs to be updated
+        currentPlayerId: null,
         currentDrawing: null,
         votingOptions: null,
         votes: [],
@@ -92,10 +93,13 @@ function App() {
       dispatch(playerFinihedDrawing({ playerId: playerId }));
     });
 
-    newSocket.on('START_MAKING_FAKE_PHRASES', ({ drawing: drawingDto }: { drawing: DrawingDto }) => {
-      const drawing = drawingFromDto(drawingDto);
-      dispatch(startMakingFakePhrases({ drawing: drawing }));
-    });
+    newSocket.on(
+      'START_MAKING_FAKE_PHRASES',
+      ({ currentPlayerId, drawing: drawingDto }: { currentPlayerId: number; drawing: DrawingDto }) => {
+        const drawing = drawingFromDto(drawingDto);
+        dispatch(startMakingFakePhrases({ currentPlayerId: currentPlayerId, drawing: drawing }));
+      }
+    );
 
     newSocket.on('PLAYER_FINISHED_MAKING_FAKE_PHRASE', ({ playerId }: { playerId: number }) => {
       dispatch(playerFinishedMakingFakePhrase({ playerId: playerId }));

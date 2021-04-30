@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Socket } from 'socket.io-client';
 import styled from 'styled-components/macro';
 import { useAppSelector } from '../app/hooks';
-import { selectCurrentDrawing } from '../features/gameRoom/gameRoomSlice';
+import { selectCurrentDrawing, selectCurrentPlayerId, selectMe } from '../features/gameRoom/gameRoomSlice';
 import DrawingCanvas from './DrawingCanvas';
 
 const Container = styled.div`
@@ -62,7 +62,9 @@ interface Props {
 }
 
 export default function FakePhraseScreen({ socket }: Props) {
-  const currentDrawing = useAppSelector(selectCurrentDrawing);
+  const me = useAppSelector(selectMe)!;
+  const currentPlayerId = useAppSelector(selectCurrentPlayerId)!;
+  const currentDrawing = useAppSelector(selectCurrentDrawing)!;
 
   const [text, setText] = useState('');
   const [isDone, setIsDone] = useState(false);
@@ -75,7 +77,7 @@ export default function FakePhraseScreen({ socket }: Props) {
 
   return (
     <>
-      {!isDone ? (
+      {!isDone && currentPlayerId !== me.id ? (
         <Container>
           <header></header>
           <DrawingContainer>
