@@ -50,6 +50,13 @@ const SubmitButton = styled.input`
   padding: 0.3em 0.6em;
 `;
 
+const WaitingMessage = styled.p`
+  color: #ffffff;
+  text-align: center;
+  font-size: 2em;
+  margin-top: 5em;
+`;
+
 interface Props {
   socket: Socket;
 }
@@ -58,23 +65,31 @@ export default function FakePhraseScreen({ socket }: Props) {
   const currentDrawing = useAppSelector(selectCurrentDrawing);
 
   const [text, setText] = useState('');
+  const [isDone, setIsDone] = useState(false);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     socket.emit('FAKE_PHRASE_DONE', { text: text });
+    setIsDone(true);
   };
 
   return (
-    <Container>
-      <header></header>
-      <DrawingContainer>
-        {currentDrawing && <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>}
-      </DrawingContainer>
-      <Form onSubmit={handleSubmit}>
-        <Label>Please name this drawing.</Label>
-        <TextInput type="text" value={text} onChange={(e) => setText(e.target.value)}></TextInput>
-        <SubmitButton type="submit" value="Done"></SubmitButton>
-      </Form>
-    </Container>
+    <>
+      {!isDone ? (
+        <Container>
+          <header></header>
+          <DrawingContainer>
+            {currentDrawing && <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>}
+          </DrawingContainer>
+          <Form onSubmit={handleSubmit}>
+            <Label>Please name this drawing.</Label>
+            <TextInput type="text" value={text} onChange={(e) => setText(e.target.value)}></TextInput>
+            <SubmitButton type="submit" value="Done"></SubmitButton>
+          </Form>
+        </Container>
+      ) : (
+        <WaitingMessage>Waiting for other players.</WaitingMessage>
+      )}
+    </>
   );
 }

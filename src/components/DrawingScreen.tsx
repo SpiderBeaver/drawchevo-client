@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Socket } from 'socket.io-client';
 import styled from 'styled-components/macro';
 import { useAppSelector } from '../app/hooks';
 import Drawing from '../domain/Drawing';
 import { drawingToDto } from '../dto/DrawingDto';
 import { selectOriginalPhrase } from '../features/gameRoom/gameRoomSlice';
-import ActionButton from './ActionButton';
 import DrawingBoard from './DrawingBoard';
 
 const Container = styled.div`
@@ -28,6 +27,13 @@ const PromptPhrase = styled.span`
   font-weight: 700;
 `;
 
+const WaitingMessage = styled.p`
+  color: #ffffff;
+  text-align: center;
+  font-size: 2em;
+  margin-top: 5em;
+`;
+
 interface Props {
   socket: Socket;
 }
@@ -35,20 +41,29 @@ interface Props {
 export default function DrawingScreen({ socket }: Props) {
   const originalPhrase = useAppSelector(selectOriginalPhrase);
 
+  const [isDone, setIsDone] = useState(false);
+
   const handleDrawingDone = (drawing: Drawing) => {
     const drawingDto = drawingToDto(drawing);
     socket.emit('DRAWING_DONE', { drawing: drawingDto });
+    setIsDone(true);
   };
 
   return (
-    <Container>
-      <header></header>
-      <Prompt>
-        Please draw: <PromptPhrase>{originalPhrase?.text}</PromptPhrase>
-      </Prompt>
-      <div>
-        <DrawingBoard onDone={handleDrawingDone}></DrawingBoard>
-      </div>
-    </Container>
+    <>
+      {!isDone ? (
+        <Container>
+          <header></header>
+          <Prompt>
+            Please draw: <PromptPhrase>{originalPhrase?.text}</PromptPhrase>
+          </Prompt>
+          <div>
+            <DrawingBoard onDone={handleDrawingDone}></DrawingBoard>
+          </div>
+        </Container>
+      ) : (
+        <WaitingMessage>Waiting for other players.</WaitingMessage>
+      )}
+    </>
   );
 }

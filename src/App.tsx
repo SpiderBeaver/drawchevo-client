@@ -34,6 +34,7 @@ const Container = styled.div`
   margin: auto;
   background-color: #292f36;
   height: 100%;
+  overflow: auto;
 `;
 
 function App() {

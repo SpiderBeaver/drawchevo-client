@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Socket } from 'socket.io-client';
 import styled from 'styled-components/macro';
 import { useAppSelector } from '../app/hooks';
@@ -25,6 +25,13 @@ const OptionsHeading = styled.h3`
   color: #ffffff;
 `;
 
+const WaitingMessage = styled.p`
+  color: #ffffff;
+  text-align: center;
+  font-size: 2em;
+  margin-top: 5em;
+`;
+
 interface Props {
   socket: Socket;
 }
@@ -32,14 +39,22 @@ interface Props {
 export default function VotingScreen({ socket }: Props) {
   const currentDrawing = useAppSelector(selectCurrentDrawing);
 
+  const [isDone, setIsDone] = useState(false);
+
   return (
-    <Container>
-      <header></header>
-      {currentDrawing && <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>}
-      <div>
-        <OptionsHeading>What do you think the original phrase is?</OptionsHeading>
-        <PhrasesVotingList socket={socket}></PhrasesVotingList>
-      </div>
-    </Container>
+    <>
+      {!isDone ? (
+        <Container>
+          <header></header>
+          {currentDrawing && <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>}
+          <div>
+            <OptionsHeading>What do you think the original phrase is?</OptionsHeading>
+            <PhrasesVotingList socket={socket} onVote={() => setIsDone(true)}></PhrasesVotingList>
+          </div>
+        </Container>
+      ) : (
+        <WaitingMessage>Waiting for other players.</WaitingMessage>
+      )}
+    </>
   );
 }

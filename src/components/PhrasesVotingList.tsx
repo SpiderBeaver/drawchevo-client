@@ -26,13 +26,15 @@ const Button = styled.button`
 
 interface Props {
   socket: Socket;
+  onVote?: () => void;
 }
 
-export default function PhrasesVotingList({ socket }: Props) {
+export default function PhrasesVotingList({ socket, onVote }: Props) {
   const votingOptions = useAppSelector(selectVotingOptions)!;
 
   const handleOptionClick = (phrase: Phrase) => {
     socket.emit('VOTE_FOR_PHRASE', { phrasePlayerId: phrase.playerId });
+    onVote?.();
   };
 
   return (
