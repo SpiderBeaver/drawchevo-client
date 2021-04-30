@@ -44,7 +44,7 @@ export default function DrawingScreen({ socket }: Props) {
     <Container>
       <header></header>
       <Prompt>
-        Please draw: <PromptPhrase>{originalPhrase}</PromptPhrase>
+        Please draw: <PromptPhrase>{originalPhrase?.text}</PromptPhrase>
       </Prompt>
       <div>
         <DrawingBoard onDone={handleDrawingDone}></DrawingBoard>

@@ -19,12 +19,12 @@ export default function VotingResultsScreen({ socket }: Props) {
 
   return (
     <div>
-      <p>Original: {originalPhrase}</p>
+      <p>Original: {originalPhrase?.text}</p>
       {votes && (
         <ul>
           {votes.map((vote) => (
             <li>
-              {vote.playerId} - {vote.phrase}
+              {vote.playerId} - {vote.phrase.playerId} - {vote.phrase.text}
             </li>
           ))}
         </ul>

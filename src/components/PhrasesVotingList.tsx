@@ -2,6 +2,7 @@ import React from 'react';
 import { Socket } from 'socket.io-client';
 import styled from 'styled-components/macro';
 import { useAppSelector } from '../app/hooks';
+import { Phrase } from '../domain/Phrase';
 import { selectVotingOptions } from '../features/gameRoom/gameRoomSlice';
 
 const List = styled.ul`
@@ -30,15 +31,15 @@ interface Props {
 export default function PhrasesVotingList({ socket }: Props) {
   const votingOptions = useAppSelector(selectVotingOptions)!;
 
-  const handleOptionClick = (option: string) => {
-    socket.emit('VOTE_FOR_PHRASE', { phrase: option });
+  const handleOptionClick = (phrase: Phrase) => {
+    socket.emit('VOTE_FOR_PHRASE', { phrasePlayerId: phrase.playerId });
   };
 
   return (
     <List>
       {votingOptions.map((option) => (
         <ListItem>
-          <Button onClick={() => handleOptionClick(option)}>{option}</Button>
+          <Button onClick={() => handleOptionClick(option)}>{option.text}</Button>
         </ListItem>
       ))}
     </List>

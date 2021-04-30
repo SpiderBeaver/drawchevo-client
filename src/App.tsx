@@ -6,7 +6,9 @@ import TitleScreen from './components/TitleScreen';
 import { GameRoom } from './domain/GameRoom';
 import DrawingDto, { drawingFromDto } from './dto/DrawingDto';
 import { GameRoomDto } from './dto/GameRoomDto';
+import { PhraseDto, phraseFromDto } from './dto/PhraseDto';
 import { PlayerDto } from './dto/PlayerDto';
+import { VoteDto } from './dto/VoteDto';
 import GameRoomComponent from './features/gameRoom/GameRoom';
 import {
   gameStarted,
@@ -43,8 +45,8 @@ function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // const newSocket = io('ws://192.168.1.7:3001');
-    const newSocket = io('wss://drawchevo.spiderbeaver.com/', { path: '/server/socket.io' });
+    const newSocket = io('ws://192.168.1.7:3001');
+    //const newSocket = io('wss://drawchevo.spiderbeaver.com/', { path: '/server/socket.io' });
 
     newSocket.on('connect', () => {
       console.log(`Connected ${newSocket.id}`);
@@ -64,7 +66,8 @@ function App() {
           username: player.username,
           status: player.status,
         })),
-        originalPhrase: room.originalPhrase,
+        originalPhrase: room.originalPhrase ? phraseFromDto(room.originalPhrase) : null,
+        // TODO: This also needs to be updated
         currentDrawing: null,
         votingOptions: null,
         votes: [],
@@ -97,22 +100,20 @@ function App() {
       dispatch(playerFinishedMakingFakePhrase({ playerId: playerId }));
     });
 
-    newSocket.on('START_VOTING', ({ options }: { options: string[] }) => {
-      dispatch(startVoting({ options: options }));
+    newSocket.on('START_VOTING', ({ phrases: phrasesDto }: { phrases: PhraseDto[] }) => {
+      const phrases = phrasesDto.map((dto) => phraseFromDto(dto));
+      dispatch(startVoting({ phrases: phrases }));
     });
 
     newSocket.on('PLAYER_FINISHED_VOTING', ({ playerId }: { playerId: number }) => {
       dispatch(playerFinishedVoting({ playerId: playerId }));
     });
 
-    interface ShowVotingResultsParams {
-      votes: {
-        playerId: number;
-        phrase: string;
-      }[];
-      originalPhrase: string;
+    interface ShowVotingResultsPayload {
+      votes: VoteDto[];
+      originalPhrase: PhraseDto;
     }
-    newSocket.on('SHOW_VOTING_RESULTS', ({ votes, originalPhrase }: ShowVotingResultsParams) => {
+    newSocket.on('SHOW_VOTING_RESULTS', ({ votes, originalPhrase }: ShowVotingResultsPayload) => {
       dispatch(showVotingResults({ originalPhrase: originalPhrase, votes: votes }));
     });
 

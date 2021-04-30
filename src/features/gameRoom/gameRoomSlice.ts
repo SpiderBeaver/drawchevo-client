@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import Drawing from '../../domain/Drawing';
 import { GameRoom } from '../../domain/GameRoom';
+import { Phrase } from '../../domain/Phrase';
+import { Vote } from '../../domain/Vote';
 
 interface GameRoomState {
   room: GameRoom | null;
@@ -63,10 +65,10 @@ const gameRoomSlice = createSlice({
         }
       }
     },
-    startVoting: (state, action: PayloadAction<{ options: string[] }>) => {
+    startVoting: (state, action: PayloadAction<{ phrases: Phrase[] }>) => {
       if (state.room) {
         state.room.state = 'VOTING';
-        state.room.votingOptions = action.payload.options;
+        state.room.votingOptions = action.payload.phrases;
         state.room.players.forEach((player) => {
           player.status = 'voting';
         });
@@ -80,16 +82,7 @@ const gameRoomSlice = createSlice({
         }
       }
     },
-    showVotingResults: (
-      state,
-      action: PayloadAction<{
-        votes: {
-          playerId: number;
-          phrase: string;
-        }[];
-        originalPhrase: string;
-      }>
-    ) => {
+    showVotingResults: (state, action: PayloadAction<{ votes: Vote[]; originalPhrase: Phrase }>) => {
       if (state.room) {
         state.room.state = 'SHOWING_VOTING_RESULTS';
         state.room.originalPhrase = action.payload.originalPhrase;
