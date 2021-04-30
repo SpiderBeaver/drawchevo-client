@@ -4,6 +4,7 @@ import styled from 'styled-components/macro';
 import { useAppSelector } from '../app/hooks';
 import { Phrase } from '../domain/Phrase';
 import { selectVotingOptions } from '../features/gameRoom/gameRoomSlice';
+import { shuffle } from '../utils';
 
 const List = styled.ul`
   margin: 0;
@@ -31,6 +32,7 @@ interface Props {
 
 export default function PhrasesVotingList({ socket, onVote }: Props) {
   const votingOptions = useAppSelector(selectVotingOptions)!;
+  const votingOptionsShuffled = shuffle(votingOptions);
 
   const handleOptionClick = (phrase: Phrase) => {
     socket.emit('VOTE_FOR_PHRASE', { phrasePlayerId: phrase.playerId });
@@ -39,7 +41,7 @@ export default function PhrasesVotingList({ socket, onVote }: Props) {
 
   return (
     <List>
-      {votingOptions.map((option) => (
+      {votingOptionsShuffled.map((option) => (
         <ListItem>
           <Button onClick={() => handleOptionClick(option)}>{option.text}</Button>
         </ListItem>
