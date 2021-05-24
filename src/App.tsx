@@ -85,6 +85,10 @@ function App() {
       dispatch(playerIdAssigned({ playerId: playerId }));
     });
 
+    newSocket.on('ASSIGN_PLAYER_TOKEN', ({ token }: { token: string }) => {
+      window.sessionStorage.setItem('drawchevo_player_token', token);
+    });
+
     newSocket.on('STARTED_GAME', () => {
       dispatch(gameStarted());
     });
@@ -124,6 +128,15 @@ function App() {
 
     setSocket(newSocket);
   }, [dispatch]);
+
+  useEffect(() => {
+    if (socket) {
+      const playerToken = window.sessionStorage.getItem('drawchevo_player_token');
+      if (playerToken) {
+        socket.emit('RECONNECT', { playerToken: playerToken });
+      }
+    }
+  }, [socket]);
 
   return (
     <Background>
