@@ -31,6 +31,8 @@ export default function DrawingCanvas({ drawing, size }: Props) {
       context.clearRect(0, 0, canvas.width, canvas.height);
 
       drawing.shapes.forEach((shape) => {
+        context.strokeStyle = shape.color;
+        context.fillStyle = shape.color;
         if (isDot(shape)) {
           context.fillRect(shape.point.x - 1, shape.point.y - 1, 2, 2);
         } else if (isLine(shape)) {

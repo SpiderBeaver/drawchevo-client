@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import Drawing, { Dot, Line } from '../domain/Drawing';
 import ActionButton from './ActionButton';
 import DrawingCanvas from './DrawingCanvas';
+import DrawingTools from './DrawingTools';
 
 // TODO: This whole thing is probably very unoptimimed, buggy and uses bad react practices. It works for now but need a lot of rewriting.
 
@@ -13,6 +14,13 @@ const Container = styled.div`
 
 const CanvasContainer = styled.div`
   margin-bottom: 1em;
+  position: relative;
+`;
+
+const DrawingToolsContainer = styled.div`
+  position: absolute;
+  top: 0.5em;
+  left: 0.5em;
 `;
 
 function calculateLocalCoordinates(board: HTMLDivElement, touch: React.Touch, drawingSize: number) {
@@ -31,6 +39,8 @@ export default function DrawingBoard({ onDone }: Props) {
   const boardRef = useRef<HTMLDivElement>(null);
 
   const drawingSize = 400;
+
+  const [currentColor, setCurrentColor] = useState('#000000');
 
   const [touches, setTouches] = useState<React.Touch[]>([]);
   const [drawing, setDrawing] = useState<Drawing>({ shapes: [] });
@@ -53,14 +63,13 @@ export default function DrawingBoard({ onDone }: Props) {
           const prevToushLocalCoords = calculateLocalCoordinates(board, prevToushState, drawingSize);
           const currentTouchCoords = calculateLocalCoordinates(board, touch, drawingSize);
 
-          const line = {
+          const line: Line = {
             type: 'Line',
+            color: currentColor,
             start: { x: prevToushLocalCoords.x, y: prevToushLocalCoords.y },
             end: { x: currentTouchCoords.x, y: currentTouchCoords.y },
-          } as Line;
+          };
           setDrawing((drawing) => ({ ...drawing, shapes: [...drawing.shapes, line] }));
-
-          drawing.shapes.push();
 
           setTouches((touches) => {
             const nextTouches = [...touches];
@@ -84,16 +93,18 @@ export default function DrawingBoard({ onDone }: Props) {
             // Tap
             const localCoords = calculateLocalCoordinates(board, touch, drawingSize);
 
-            const dot = { type: 'Dot', point: { x: localCoords.x, y: localCoords.y } } as Dot;
+            const dot: Dot = { type: 'Dot', color: currentColor, point: { x: localCoords.x, y: localCoords.y } };
             setDrawing((drawing) => ({ ...drawing, shapes: [...drawing.shapes, dot] }));
           } else {
             const prevToushLocalCoords = calculateLocalCoordinates(board, prevToushState, drawingSize);
             const currentTouchCoords = calculateLocalCoordinates(board, touch, drawingSize);
-            drawing.shapes.push({
+            const line: Line = {
               type: 'Line',
+              color: currentColor,
               start: { x: prevToushLocalCoords.x, y: prevToushLocalCoords.y },
               end: { x: currentTouchCoords.x, y: currentTouchCoords.y },
-            } as Line);
+            };
+            drawing.shapes.push(line);
           }
 
           const touchIndex = touches.indexOf(prevToushState);
@@ -111,6 +122,9 @@ export default function DrawingBoard({ onDone }: Props) {
     <Container ref={boardRef} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
       <CanvasContainer>
         <DrawingCanvas drawing={drawing} size={drawingSize}></DrawingCanvas>
+        <DrawingToolsContainer>
+          <DrawingTools onColorSelect={(color) => setCurrentColor(color)}></DrawingTools>
+        </DrawingToolsContainer>
       </CanvasContainer>
 
       <ActionButton onClick={handleDoneButton}>Done</ActionButton>
