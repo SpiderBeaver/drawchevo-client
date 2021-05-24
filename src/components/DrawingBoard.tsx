@@ -4,6 +4,7 @@ import Drawing, { Dot, Line } from '../domain/Drawing';
 import ActionButton from './ActionButton';
 import DrawingCanvas from './DrawingCanvas';
 import DrawingTools from './DrawingTools';
+import UndoIcon from './icons/UndoIcon';
 
 // TODO: This whole thing is probably very unoptimimed, buggy and uses bad react practices. It works for now but need a lot of rewriting.
 
@@ -21,6 +22,14 @@ const DrawingToolsContainer = styled.div`
   position: absolute;
   top: 0.5em;
   left: 0.5em;
+`;
+
+const UndoButton = styled.div`
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  width: 1.3em;
+  height: 1.3em;
 `;
 
 function calculateLocalCoordinates(board: HTMLDivElement, touch: React.Touch, drawingSize: number) {
@@ -114,6 +123,11 @@ export default function DrawingBoard({ onDone }: Props) {
     }
   };
 
+  const handleUndoButton = () => {
+    // Remove the last shape
+    setDrawing((drawing) => ({ ...drawing, shapes: drawing.shapes.slice(0, -1) }));
+  };
+
   const handleDoneButton = () => {
     onDone?.(drawing);
   };
@@ -125,6 +139,9 @@ export default function DrawingBoard({ onDone }: Props) {
         <DrawingToolsContainer>
           <DrawingTools onColorSelect={(color) => setCurrentColor(color)}></DrawingTools>
         </DrawingToolsContainer>
+        <UndoButton onClick={handleUndoButton}>
+          <UndoIcon></UndoIcon>
+        </UndoButton>
       </CanvasContainer>
 
       <ActionButton onClick={handleDoneButton}>Done</ActionButton>
