@@ -35,7 +35,7 @@ export default function PhrasesVotingList({ socket, onVote }: Props) {
   const votingOptionsShuffled = shuffle(votingOptions);
 
   const handleOptionClick = (phrase: Phrase) => {
-    socket.emit('VOTE_FOR_PHRASE', { phrasePlayerId: phrase.playerId });
+    socket.emit('VOTE_FOR_PHRASE', { phrasePlayerId: phrase.authorId });
     onVote?.();
   };
 

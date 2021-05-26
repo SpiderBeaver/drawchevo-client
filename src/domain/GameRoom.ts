@@ -3,7 +3,13 @@ import { Phrase } from './Phrase';
 import { Player } from './Player';
 import { Vote } from './Vote';
 
-export type GameState = 'NOT_STARTED' | 'DRAWING' | 'MAKING_FAKE_PHRASES' | 'VOTING' | 'SHOWING_VOTING_RESULTS';
+export type GameState =
+  | 'NOT_STARTED'
+  | 'MAKING_PHRASES'
+  | 'DRAWING'
+  | 'MAKING_FAKE_PHRASES'
+  | 'VOTING'
+  | 'SHOWING_VOTING_RESULTS';
 
 export interface GameRoom {
   id: string;

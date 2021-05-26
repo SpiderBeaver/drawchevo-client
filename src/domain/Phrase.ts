@@ -1,4 +1,5 @@
 export interface Phrase {
-  playerId: number;
+  authorId: number;
+  drawingPlayerId: number | null;
   text: string;
 }

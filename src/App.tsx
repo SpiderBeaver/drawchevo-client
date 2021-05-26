@@ -12,6 +12,7 @@ import { VoteDto } from './dto/VoteDto';
 import GameRoomComponent from './features/gameRoom/GameRoom';
 import {
   gameStarted,
+  makingPhrasesStarted,
   playerFinihedDrawing,
   playerFinishedMakingFakePhrase,
   playerFinishedVoting,
@@ -89,8 +90,13 @@ function App() {
       window.sessionStorage.setItem('drawchevo_player_token', token);
     });
 
+    // TODO: Check if this is stiil used.
     newSocket.on('STARTED_GAME', () => {
       dispatch(gameStarted());
+    });
+
+    newSocket.on('START_MAKING_PHRASE', () => {
+      dispatch(makingPhrasesStarted());
     });
 
     newSocket.on('PLAYER_FINISHED_DRAWING', ({ playerId }: { playerId: number }) => {
@@ -99,9 +105,20 @@ function App() {
 
     newSocket.on(
       'START_MAKING_FAKE_PHRASES',
-      ({ currentPlayerId, drawing: drawingDto }: { currentPlayerId: number; drawing: DrawingDto }) => {
+      ({
+        currentPlayerId,
+        originalPhrase: originalPhraseDto,
+        drawing: drawingDto,
+      }: {
+        currentPlayerId: number;
+        originalPhrase: PhraseDto;
+        drawing: DrawingDto;
+      }) => {
         const drawing = drawingFromDto(drawingDto);
-        dispatch(startMakingFakePhrases({ currentPlayerId: currentPlayerId, drawing: drawing }));
+        const originalPhrase = phraseFromDto(originalPhraseDto);
+        dispatch(
+          startMakingFakePhrases({ currentPlayerId: currentPlayerId, originalPhrase: originalPhrase, drawing: drawing })
+        );
       }
     );
 

@@ -42,7 +42,12 @@ const gameRoomSlice = createSlice({
     },
     gameStarted: (state) => {
       if (state.room) {
-        state.room.state = 'DRAWING';
+        state.room.state = 'MAKING_PHRASES';
+      }
+    },
+    makingPhrasesStarted: (state) => {
+      if (state.room) {
+        state.room.state = 'MAKING_PHRASES';
       }
     },
     playerFinihedDrawing: (state, action: PayloadAction<{ playerId: number }>) => {
@@ -51,10 +56,14 @@ const gameRoomSlice = createSlice({
         player.status = 'finished_drawing';
       }
     },
-    startMakingFakePhrases: (state, action: PayloadAction<{ currentPlayerId: number; drawing: Drawing }>) => {
+    startMakingFakePhrases: (
+      state,
+      action: PayloadAction<{ currentPlayerId: number; originalPhrase: Phrase; drawing: Drawing }>
+    ) => {
       if (state.room) {
         state.room.state = 'MAKING_FAKE_PHRASES';
         state.room.currentPlayerId = action.payload.currentPlayerId;
+        state.room.originalPhrase = action.payload.originalPhrase;
         state.room.currentDrawing = action.payload.drawing;
         state.room.players.forEach((p) => (p.status = 'making_fake_phrase'));
       }
@@ -99,6 +108,7 @@ export const {
   playerIdAssigned,
   playerJoined,
   gameStarted,
+  makingPhrasesStarted,
   playerFinihedDrawing,
   startMakingFakePhrases,
   playerFinishedMakingFakePhrase,
