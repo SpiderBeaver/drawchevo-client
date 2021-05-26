@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import Drawing, { Dot, Line } from '../domain/Drawing';
-import ActionButton from './ActionButton';
+import ActionButton from './elements/ActionButton';
 import DrawingCanvas from './DrawingCanvas';
 import DrawingTools from './DrawingTools';
 import UndoIcon from './icons/UndoIcon';

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import styled from 'styled-components/macro';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import TitleScreen from './components/TitleScreen';
+import TitleScreen from './components/screens/TitleScreen';
 import { GameRoom } from './domain/GameRoom';
 import DrawingDto, { drawingFromDto } from './dto/DrawingDto';
 import { GameRoomDto } from './dto/GameRoomDto';

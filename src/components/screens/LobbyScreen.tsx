@@ -1,20 +1,20 @@
 import React from 'react';
 import { Socket } from 'socket.io-client';
 import styled from 'styled-components/macro';
-import { useAppSelector } from '../app/hooks';
-import { Player } from '../domain/Player';
+import { useAppSelector } from '../../app/hooks';
+import { Player } from '../../domain/Player';
 import {
   selectGameRoomHostId,
   selectGameRoomId,
   selectGameRoomPlayers,
   selectMe,
-} from '../features/gameRoom/gameRoomSlice';
-import ActionButton from './ActionButton';
+} from '../../features/gameRoom/gameRoomSlice';
+import ActionButton from '../elements/ActionButton';
+import Container from '../elements/Container';
+import Heading from '../elements/Heading';
 
-const Container = styled.div`
+const Layout = styled.div`
   height: 100%;
-  padding: 1.5em;
-  box-sizing: border-box;
   display: grid;
   grid-template-rows: auto auto auto auto 1fr auto;
   grid-template-areas:
@@ -37,15 +37,6 @@ const BackButton = styled.button`
   color: #ffffff;
   text-transform: uppercase;
   font-size: 0.8em;
-`;
-
-const Heading = styled.h2`
-  margin: 0;
-  color: #ffffff;
-  text-transform: uppercase;
-  font-weight: 400;
-  font-size: 2em;
-  margin-bottom: 1em;
 `;
 
 const RoomIdLine = styled.p`
@@ -105,24 +96,26 @@ export default function LobbyScreen({ socket, onLeave }: Props) {
 
   return (
     <Container>
-      <Header>
-        <BackButton onClick={onLeave}>quit</BackButton>
-      </Header>
-      <Heading>Waiting for players</Heading>
-      <RoomIdLine>
-        Room ID: <RoomId>{roomId}</RoomId>
-      </RoomIdLine>
-      <PlayersCount>{players?.length} players connected</PlayersCount>
-      <PlayersList>
-        {players?.map((player) => (
-          <PlayersListItem>{player.username}</PlayersListItem>
-        ))}
-      </PlayersList>
-      {me && me.id === hostId ? (
-        <StartGameButton onClick={handleStartGame}>Start game</StartGameButton>
-      ) : (
-        <WaitingMessage>Waiting for the host to start.</WaitingMessage>
-      )}
+      <Layout>
+        <Header>
+          <BackButton onClick={onLeave}>quit</BackButton>
+        </Header>
+        <Heading>Waiting for players</Heading>
+        <RoomIdLine>
+          Room ID: <RoomId>{roomId}</RoomId>
+        </RoomIdLine>
+        <PlayersCount>{players?.length} players connected</PlayersCount>
+        <PlayersList>
+          {players?.map((player) => (
+            <PlayersListItem>{player.username}</PlayersListItem>
+          ))}
+        </PlayersList>
+        {me && me.id === hostId ? (
+          <StartGameButton onClick={handleStartGame}>Start game</StartGameButton>
+        ) : (
+          <WaitingMessage>Waiting for the host to start.</WaitingMessage>
+        )}
+      </Layout>
     </Container>
   );
 }

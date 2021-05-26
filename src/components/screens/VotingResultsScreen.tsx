@@ -1,20 +1,20 @@
 import React from 'react';
 import { Socket } from 'socket.io-client';
 import styled from 'styled-components';
-import { useAppSelector } from '../app/hooks';
+import { useAppSelector } from '../../app/hooks';
 import {
   selectGameRoomHostId,
   selectGameRoomPlayers,
   selectMe,
   selectVotes,
   selectVotingOptions,
-} from '../features/gameRoom/gameRoomSlice';
-import ActionButton from './ActionButton';
+} from '../../features/gameRoom/gameRoomSlice';
+import ActionButton from '../elements/ActionButton';
+import Container from '../elements/Container';
+import Heading from '../elements/Heading';
 
-const Container = styled.div`
-  height: 100%;
-  padding: 1.5em;
-  box-sizing: border-box;
+const Layout = styled.div`
+  min-height: 100%;
   display: grid;
   grid-template-rows: auto auto 1fr auto;
   grid-template-areas:
@@ -22,16 +22,6 @@ const Container = styled.div`
     'heading'
     'votes'
     'button';
-  overflow: scroll;
-`;
-
-const Heading = styled.h2`
-  margin: 0;
-  color: #ffffff;
-  text-transform: uppercase;
-  font-weight: 400;
-  font-size: 2em;
-  margin-bottom: 1em;
 `;
 
 const PhrasesList = styled.ul`
@@ -92,28 +82,30 @@ export default function VotingResultsScreen({ socket }: Props) {
 
   return (
     <Container>
-      <header></header>
-      <Heading>Voting results</Heading>
+      <Layout>
+        <header></header>
+        <Heading>Voting results</Heading>
 
-      <PhrasesList>
-        {votingOptions.map((phrase) => (
-          <PhrasesListItem>
-            <PhraseHeading>{players.find((player) => player.id === phrase.authorId)!.username}</PhraseHeading>
-            <Phrase>
-              <PhraseText>{phrase.text}</PhraseText>
-              <VotesList>
-                {votes
-                  .filter((vote) => vote.phrase.authorId === phrase.authorId)
-                  .map((vote) => (
-                    <VotesListItem>{players.find((player) => player.id === vote.playerId)!.username}</VotesListItem>
-                  ))}
-              </VotesList>
-            </Phrase>
-          </PhrasesListItem>
-        ))}
-      </PhrasesList>
+        <PhrasesList>
+          {votingOptions.map((phrase) => (
+            <PhrasesListItem>
+              <PhraseHeading>{players.find((player) => player.id === phrase.authorId)!.username}</PhraseHeading>
+              <Phrase>
+                <PhraseText>{phrase.text}</PhraseText>
+                <VotesList>
+                  {votes
+                    .filter((vote) => vote.phrase.authorId === phrase.authorId)
+                    .map((vote) => (
+                      <VotesListItem>{players.find((player) => player.id === vote.playerId)!.username}</VotesListItem>
+                    ))}
+                </VotesList>
+              </Phrase>
+            </PhrasesListItem>
+          ))}
+        </PhrasesList>
 
-      {me && me.id === hostId ? <ActionButton onClick={handleNextRoundButton}>Next round</ActionButton> : null}
+        {me && me.id === hostId ? <ActionButton onClick={handleNextRoundButton}>Next round</ActionButton> : null}
+      </Layout>
     </Container>
   );
 }

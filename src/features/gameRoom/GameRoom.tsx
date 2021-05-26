@@ -1,12 +1,12 @@
 import React from 'react';
 import { Socket } from 'socket.io-client';
 import { useAppSelector } from '../../app/hooks';
-import DrawingScreen from '../../components/DrawingScreen';
-import FakePhraseScreen from '../../components/FakePhraseScreen';
-import LobbyScreen from '../../components/LobbyScreen';
-import VotingResultsScreen from '../../components/VotingResultsScreen';
-import VotingScreen from '../../components/VotingScreen';
-import WritePhraseScreen from '../../components/WritePhraseScreen';
+import DrawingScreen from '../../components/screens/DrawingScreen';
+import FakePhraseScreen from '../../components/screens/FakePhraseScreen';
+import LobbyScreen from '../../components/screens/LobbyScreen';
+import VotingResultsScreen from '../../components/screens/VotingResultsScreen';
+import VotingScreen from '../../components/screens/VotingScreen';
+import WritePhraseScreen from '../../components/screens/WritePhraseScreen';
 import { selectGameRoomState } from './gameRoomSlice';
 
 interface Props {

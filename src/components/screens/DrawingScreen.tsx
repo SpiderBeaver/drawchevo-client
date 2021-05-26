@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Socket } from 'socket.io-client';
 import styled from 'styled-components/macro';
-import { useAppSelector } from '../app/hooks';
-import Drawing from '../domain/Drawing';
-import { drawingToDto } from '../dto/DrawingDto';
-import { selectOriginalPhrase } from '../features/gameRoom/gameRoomSlice';
-import DrawingBoard from './DrawingBoard';
+import { useAppSelector } from '../../app/hooks';
+import Drawing from '../../domain/Drawing';
+import { drawingToDto } from '../../dto/DrawingDto';
+import { selectOriginalPhrase } from '../../features/gameRoom/gameRoomSlice';
+import Container from '../elements/Container';
+import WaitingForPlayersMessage from '../elements/WaitingForPlayersMessage';
+import DrawingBoard from './../DrawingBoard';
 
-const Container = styled.div`
+const Layout = styled.div`
   height: 100%;
-  padding: 1.5em;
-  box-sizing: border-box;
   display: grid;
   grid-template-rows: auto auto 1fr;
   grid-template-areas:
@@ -25,13 +25,6 @@ const Prompt = styled.p`
 
 const PromptPhrase = styled.span`
   font-weight: 700;
-`;
-
-const WaitingMessage = styled.p`
-  color: #ffffff;
-  text-align: center;
-  font-size: 2em;
-  margin-top: 5em;
 `;
 
 interface Props {
@@ -53,16 +46,18 @@ export default function DrawingScreen({ socket }: Props) {
     <>
       {!isDone ? (
         <Container>
-          <header></header>
-          <Prompt>
-            Please draw: <PromptPhrase>{originalPhrase?.text}</PromptPhrase>
-          </Prompt>
-          <div>
-            <DrawingBoard onDone={handleDrawingDone}></DrawingBoard>
-          </div>
+          <Layout>
+            <header></header>
+            <Prompt>
+              Please draw: <PromptPhrase>{originalPhrase?.text}</PromptPhrase>
+            </Prompt>
+            <div>
+              <DrawingBoard onDone={handleDrawingDone}></DrawingBoard>
+            </div>
+          </Layout>
         </Container>
       ) : (
-        <WaitingMessage>Waiting for other players.</WaitingMessage>
+        <WaitingForPlayersMessage></WaitingForPlayersMessage>
       )}
     </>
   );
