@@ -11,6 +11,7 @@ import {
 } from '../../features/gameRoom/gameRoomSlice';
 import ActionButton from '../elements/ActionButton';
 import Container from '../elements/Container';
+import InGameHeader from '../elements/header/InGameHeader';
 import Heading from '../elements/Heading';
 
 const Layout = styled.div`
@@ -83,7 +84,7 @@ export default function VotingResultsScreen({ socket }: Props) {
   return (
     <Container>
       <Layout>
-        <header></header>
+        <InGameHeader socket={socket}></InGameHeader>
         <Heading>Voting results</Heading>
 
         <PhrasesList>

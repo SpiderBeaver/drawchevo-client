@@ -6,6 +6,7 @@ import Form from '../elements/forms/Form';
 import Label from '../elements/forms/Label';
 import SubmitButton from '../elements/forms/SubmitButton';
 import TextInput from '../elements/forms/TextInput';
+import InGameHeader from '../elements/header/InGameHeader';
 import WaitingForPlayersMessage from '../elements/WaitingForPlayersMessage';
 
 const Layout = styled.div`
@@ -38,7 +39,7 @@ export default function WritePhraseScreen({ socket }: Props) {
       {!isDone ? (
         <Container>
           <Layout>
-            <header></header>
+            <InGameHeader socket={socket}></InGameHeader>
             <Form onSubmit={handleSubmit}>
               <Label>Write a short phrase.</Label>
               <TextInput type="text" value={text} onChange={(e) => setText(e.target.value)}></TextInput>
@@ -47,7 +48,10 @@ export default function WritePhraseScreen({ socket }: Props) {
           </Layout>
         </Container>
       ) : (
-        <WaitingForPlayersMessage></WaitingForPlayersMessage>
+        <Container>
+          <InGameHeader socket={socket}></InGameHeader>
+          <WaitingForPlayersMessage></WaitingForPlayersMessage>
+        </Container>
       )}
     </>
   );

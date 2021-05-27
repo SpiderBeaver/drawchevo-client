@@ -5,6 +5,7 @@ import { useAppSelector } from '../../app/hooks';
 import { selectCurrentDrawing } from '../../features/gameRoom/gameRoomSlice';
 import DrawingCanvas from '../DrawingCanvas';
 import Container from '../elements/Container';
+import InGameHeader from '../elements/header/InGameHeader';
 import WaitingForPlayersMessage from '../elements/WaitingForPlayersMessage';
 import PhrasesVotingList from '../PhrasesVotingList';
 
@@ -38,7 +39,7 @@ export default function VotingScreen({ socket }: Props) {
       {!isDone ? (
         <Container>
           <Layout>
-            <header></header>
+            <InGameHeader socket={socket}></InGameHeader>
             {currentDrawing && <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>}
             <div>
               <OptionsHeading>What do you think the original phrase is?</OptionsHeading>
@@ -47,7 +48,10 @@ export default function VotingScreen({ socket }: Props) {
           </Layout>
         </Container>
       ) : (
-        <WaitingForPlayersMessage></WaitingForPlayersMessage>
+        <Container>
+          <InGameHeader socket={socket}></InGameHeader>
+          <WaitingForPlayersMessage></WaitingForPlayersMessage>
+        </Container>
       )}
     </>
   );

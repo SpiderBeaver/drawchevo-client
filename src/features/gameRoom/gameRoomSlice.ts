@@ -100,6 +100,14 @@ const gameRoomSlice = createSlice({
         state.room.votes = action.payload.votes;
       }
     },
+    gameQuit: (state) => {
+      state.room = null;
+      state.myPlayerId = null;
+    },
+    gameEnded: (state) => {
+      state.room = null;
+      state.myPlayerId = null;
+    },
   },
 });
 
@@ -115,6 +123,8 @@ export const {
   startVoting,
   playerFinishedVoting,
   showVotingResults,
+  gameQuit,
+  gameEnded,
 } = gameRoomSlice.actions;
 
 export const selectGameRoomId = (state: RootState) => state.gameRoom.room?.id;

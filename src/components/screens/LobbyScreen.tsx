@@ -1,9 +1,10 @@
 import React from 'react';
 import { Socket } from 'socket.io-client';
 import styled from 'styled-components/macro';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Player } from '../../domain/Player';
 import {
+  gameQuit,
   selectGameRoomHostId,
   selectGameRoomId,
   selectGameRoomPlayers,
@@ -11,6 +12,7 @@ import {
 } from '../../features/gameRoom/gameRoomSlice';
 import ActionButton from '../elements/ActionButton';
 import Container from '../elements/Container';
+import InGameHeader from '../elements/header/InGameHeader';
 import Heading from '../elements/Heading';
 
 const Layout = styled.div`
@@ -24,19 +26,6 @@ const Layout = styled.div`
     'players-count'
     'players-list'
     'start-button';
-`;
-
-const Header = styled.header`
-  margin-bottom: 2em;
-`;
-
-const BackButton = styled.button`
-  padding: 0;
-  border: none;
-  background: none;
-  color: #ffffff;
-  text-transform: uppercase;
-  font-size: 0.8em;
 `;
 
 const RoomIdLine = styled.p`
@@ -97,9 +86,7 @@ export default function LobbyScreen({ socket, onLeave }: Props) {
   return (
     <Container>
       <Layout>
-        <Header>
-          <BackButton onClick={onLeave}>quit</BackButton>
-        </Header>
+        <InGameHeader socket={socket}></InGameHeader>
         <Heading>Waiting for players</Heading>
         <RoomIdLine>
           Room ID: <RoomId>{roomId}</RoomId>

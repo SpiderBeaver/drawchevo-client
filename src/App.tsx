@@ -11,6 +11,7 @@ import { PlayerDto } from './dto/PlayerDto';
 import { VoteDto } from './dto/VoteDto';
 import GameRoomComponent from './features/gameRoom/GameRoom';
 import {
+  gameEnded,
   gameStarted,
   makingPhrasesStarted,
   playerFinihedDrawing,
@@ -141,6 +142,11 @@ function App() {
     }
     newSocket.on('SHOW_VOTING_RESULTS', ({ votes, originalPhrase }: ShowVotingResultsPayload) => {
       dispatch(showVotingResults({ originalPhrase: originalPhrase, votes: votes }));
+    });
+
+    newSocket.on('GAME_ENDED', () => {
+      window.sessionStorage.removeItem('drawchevo_player_token');
+      dispatch(gameEnded());
     });
 
     setSocket(newSocket);

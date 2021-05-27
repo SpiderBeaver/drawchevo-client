@@ -13,6 +13,7 @@ import Form from '../elements/forms/Form';
 import Label from '../elements/forms/Label';
 import SubmitButton from '../elements/forms/SubmitButton';
 import TextInput from '../elements/forms/TextInput';
+import InGameHeader from '../elements/header/InGameHeader';
 import WaitingForPlayersMessage from '../elements/WaitingForPlayersMessage';
 
 const Container = styled.div`
@@ -54,7 +55,7 @@ export default function FakePhraseScreen({ socket }: Props) {
     <>
       {!isDone && currentPlayerId !== me.id && originalPhrase.authorId !== me.id ? (
         <Container>
-          <header></header>
+          <InGameHeader socket={socket}></InGameHeader>
           <DrawingContainer>
             {currentDrawing && <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>}
           </DrawingContainer>
@@ -65,7 +66,10 @@ export default function FakePhraseScreen({ socket }: Props) {
           </Form>
         </Container>
       ) : (
-        <WaitingForPlayersMessage></WaitingForPlayersMessage>
+        <Container>
+          <InGameHeader socket={socket}></InGameHeader>
+          <WaitingForPlayersMessage></WaitingForPlayersMessage>
+        </Container>
       )}
     </>
   );

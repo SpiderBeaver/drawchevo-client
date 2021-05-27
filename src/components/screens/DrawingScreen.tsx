@@ -6,6 +6,7 @@ import Drawing from '../../domain/Drawing';
 import { drawingToDto } from '../../dto/DrawingDto';
 import { selectOriginalPhrase } from '../../features/gameRoom/gameRoomSlice';
 import Container from '../elements/Container';
+import InGameHeader from '../elements/header/InGameHeader';
 import WaitingForPlayersMessage from '../elements/WaitingForPlayersMessage';
 import DrawingBoard from './../DrawingBoard';
 
@@ -47,7 +48,7 @@ export default function DrawingScreen({ socket }: Props) {
       {!isDone ? (
         <Container>
           <Layout>
-            <header></header>
+            <InGameHeader socket={socket}></InGameHeader>
             <Prompt>
               Please draw: <PromptPhrase>{originalPhrase?.text}</PromptPhrase>
             </Prompt>
@@ -57,7 +58,10 @@ export default function DrawingScreen({ socket }: Props) {
           </Layout>
         </Container>
       ) : (
-        <WaitingForPlayersMessage></WaitingForPlayersMessage>
+        <Container>
+          <InGameHeader socket={socket}></InGameHeader>
+          <WaitingForPlayersMessage></WaitingForPlayersMessage>
+        </Container>
       )}
     </>
   );
