@@ -139,7 +139,10 @@ export default function DrawingBoard({ onDone }: Props) {
         <DrawingToolsContainer>
           <DrawingTools onColorSelect={(color) => setCurrentColor(color)}></DrawingTools>
         </DrawingToolsContainer>
-        <UndoButton onClick={handleUndoButton}>
+        {
+          // Stop propagation on touch start so that pressing Undo does not trigger drawing.
+        }
+        <UndoButton onClick={handleUndoButton} onTouchStart={(event) => event.stopPropagation()}>
           <UndoIcon></UndoIcon>
         </UndoButton>
       </CanvasContainer>
