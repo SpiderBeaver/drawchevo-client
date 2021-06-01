@@ -13,4 +13,5 @@ export interface Player {
   id: number;
   username: string;
   status: PlayerStatus;
+  points: number;
 }

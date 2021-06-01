@@ -90,7 +90,10 @@ export default function VotingResultsScreen({ socket }: Props) {
         <PhrasesList>
           {votingOptions.map((phrase) => (
             <PhrasesListItem>
-              <PhraseHeading>{players.find((player) => player.id === phrase.authorId)!.username}</PhraseHeading>
+              <PhraseHeading>
+                {players.find((player) => player.id === phrase.authorId)!.username} (
+                {players.find((player) => player.id === phrase.authorId)!.points} points)
+              </PhraseHeading>
               <Phrase>
                 <PhraseText>{phrase.text}</PhraseText>
                 <VotesList>

@@ -15,6 +15,13 @@ const initialState: GameRoomState = {
   myPlayerId: null,
 };
 
+export interface UpdatePointsActionPayload {
+  points: {
+    playerId: number;
+    points: number;
+  }[];
+}
+
 const gameRoomSlice = createSlice({
   name: 'gameRoom',
   initialState: initialState,
@@ -38,7 +45,12 @@ const gameRoomSlice = createSlice({
       state.myPlayerId = action.payload.playerId;
     },
     playerJoined: (state, action: PayloadAction<{ playerId: number; username: string }>) => {
-      state.room?.players.push({ id: action.payload.playerId, username: action.payload.username, status: 'idle' });
+      state.room?.players.push({
+        id: action.payload.playerId,
+        username: action.payload.username,
+        status: 'idle',
+        points: 0,
+      });
     },
     gameStarted: (state) => {
       if (state.room) {
@@ -93,6 +105,15 @@ const gameRoomSlice = createSlice({
         }
       }
     },
+    updatePoints: (state, action: PayloadAction<UpdatePointsActionPayload>) => {
+      if (state.room) {
+        const room = state.room;
+        action.payload.points.forEach((playerPoints) => {
+          const player = room.players.find((player) => player.id === playerPoints.playerId)!;
+          player.points = playerPoints.points;
+        });
+      }
+    },
     showVotingResults: (state, action: PayloadAction<{ votes: Vote[]; originalPhrase: Phrase }>) => {
       if (state.room) {
         state.room.state = 'SHOWING_VOTING_RESULTS';
@@ -122,6 +143,7 @@ export const {
   playerFinishedMakingFakePhrase,
   startVoting,
   playerFinishedVoting,
+  updatePoints,
   showVotingResults,
   gameQuit,
   gameEnded,

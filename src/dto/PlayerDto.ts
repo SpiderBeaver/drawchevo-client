@@ -4,4 +4,5 @@ export interface PlayerDto {
   id: number;
   username: string;
   status: PlayerStatus;
+  points: number;
 }

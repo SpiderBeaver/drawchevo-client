@@ -24,6 +24,7 @@ import {
   showVotingResults,
   startMakingFakePhrases,
   startVoting,
+  updatePoints,
 } from './features/gameRoom/gameRoomSlice';
 
 const Background = styled.div`
@@ -59,17 +60,18 @@ function App() {
       console.log(`Disconnected ${newSocket.id}`);
     });
 
-    newSocket.on('UPDATE_ROOM_STATE', ({ room }: { room: GameRoomDto }) => {
+    newSocket.on('UPDATE_ROOM_STATE', ({ room: roomDto }: { room: GameRoomDto }) => {
       const newState: GameRoom = {
-        id: room.id,
-        hostId: room.hostId,
-        state: room.state,
-        players: room.players.map((player) => ({
-          id: player.id,
-          username: player.username,
-          status: player.status,
+        id: roomDto.id,
+        hostId: roomDto.hostId,
+        state: roomDto.state,
+        players: roomDto.players.map((playerDto) => ({
+          id: playerDto.id,
+          username: playerDto.username,
+          status: playerDto.status,
+          points: playerDto.points,
         })),
-        originalPhrase: room.originalPhrase ? phraseFromDto(room.originalPhrase) : null,
+        originalPhrase: roomDto.originalPhrase ? phraseFromDto(roomDto.originalPhrase) : null,
         // TODO: This also needs to be updated
         currentPlayerId: null,
         currentDrawing: null,
@@ -134,6 +136,16 @@ function App() {
 
     newSocket.on('PLAYER_FINISHED_VOTING', ({ playerId }: { playerId: number }) => {
       dispatch(playerFinishedVoting({ playerId: playerId }));
+    });
+
+    interface UpdatePointsDto {
+      points: {
+        playerId: number;
+        points: number;
+      }[];
+    }
+    newSocket.on('UPDATE_POINTS', (payload: UpdatePointsDto) => {
+      dispatch(updatePoints(payload));
     });
 
     interface ShowVotingResultsPayload {
