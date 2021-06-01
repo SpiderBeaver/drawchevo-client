@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { Socket } from 'socket.io-client';
 import styled from 'styled-components/macro';
 import { useAppSelector } from '../../app/hooks';
-import { selectCurrentDrawing } from '../../features/gameRoom/gameRoomSlice';
+import {
+  selectCurrentDrawing,
+  selectCurrentPlayerId,
+  selectMe,
+  selectOriginalPhrase,
+} from '../../features/gameRoom/gameRoomSlice';
 import DrawingCanvas from '../DrawingCanvas';
 import Container from '../elements/Container';
 import InGameHeader from '../elements/header/InGameHeader';
@@ -30,17 +35,20 @@ interface Props {
 }
 
 export default function VotingScreen({ socket }: Props) {
-  const currentDrawing = useAppSelector(selectCurrentDrawing);
+  const currentDrawing = useAppSelector(selectCurrentDrawing)!;
+  const me = useAppSelector(selectMe)!;
+  const currentPlayerId = useAppSelector(selectCurrentPlayerId)!;
+  const originalPhrase = useAppSelector(selectOriginalPhrase)!;
 
   const [isDone, setIsDone] = useState(false);
 
   return (
     <>
-      {!isDone ? (
+      {!isDone && currentPlayerId !== me.id && originalPhrase.authorId !== me.id ? (
         <Container>
           <Layout>
             <InGameHeader socket={socket}></InGameHeader>
-            {currentDrawing && <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>}
+            <DrawingCanvas drawing={currentDrawing} size={400}></DrawingCanvas>
             <div>
               <OptionsHeading>What do you think the original phrase is?</OptionsHeading>
               <PhrasesVotingList socket={socket} onVote={() => setIsDone(true)}></PhrasesVotingList>
