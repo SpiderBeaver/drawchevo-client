@@ -27,6 +27,8 @@ import {
   updatePoints,
 } from './features/gameRoom/gameRoomSlice';
 
+const serverUrl = process.env.REACT_APP_SERVER_URL!;
+
 const Background = styled.div`
   height: 100%;
   background-color: black;
@@ -49,8 +51,7 @@ function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const newSocket = io('ws://192.168.1.7:3001');
-    //const newSocket = io('wss://drawchevo.spiderbeaver.com/', { path: '/server/socket.io' });
+    const newSocket = io(serverUrl);
 
     newSocket.on('connect', () => {
       console.log(`Connected ${newSocket.id}`);

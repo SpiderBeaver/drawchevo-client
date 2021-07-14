@@ -4,6 +4,8 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 FROM node as builder
+ARG server_url
+ENV REACT_APP_SERVER_URL=$server_url
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
