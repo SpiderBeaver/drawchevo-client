@@ -59,6 +59,10 @@ const PlayersListItem = styled.li`
   margin-bottom: 0.5em;
 `;
 
+const MinimumPlayersMessage = styled.p`
+  color: #ffffff;
+`;
+
 const StartGameButton = styled(ActionButton)`
   justify-self: end;
   margin-top: 1em;
@@ -76,7 +80,7 @@ interface Props {
 export default function LobbyScreen({ socket, onLeave }: Props) {
   const roomId = useAppSelector(selectGameRoomId);
   const me = useAppSelector(selectMe);
-  const players = useAppSelector(selectGameRoomPlayers);
+  const players = useAppSelector(selectGameRoomPlayers)!;
   const hostId = useAppSelector(selectGameRoomHostId);
 
   const handleStartGame = () => {
@@ -98,7 +102,11 @@ export default function LobbyScreen({ socket, onLeave }: Props) {
           ))}
         </PlayersList>
         {me && me.id === hostId ? (
-          <StartGameButton onClick={handleStartGame}>Start game</StartGameButton>
+          players.length < 4 ? (
+            <MinimumPlayersMessage>At least 4 players requred to start the game.</MinimumPlayersMessage>
+          ) : (
+            <StartGameButton onClick={handleStartGame}>Start game</StartGameButton>
+          )
         ) : (
           <WaitingMessage>Waiting for the host to start.</WaitingMessage>
         )}
