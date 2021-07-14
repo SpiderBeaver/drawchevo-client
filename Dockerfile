@@ -1,7 +1,17 @@
-FROM nginx:1.18
+FROM node as deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install
 
-COPY /build /usr/share/nginx/html
+FROM node as builder
+WORKDIR /app
+COPY . .
+COPY --from=deps /app/node_modules ./node_modules
+RUN npm run build
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-CMD nginx -g "daemon off;"
+FROM node as runner
+WORKDIR /app
+COPY --from=builder /app/build ./build
+RUN npm install -g serve
+EXPOSE 5000
+CMD ["serve", "-s", "build"]
