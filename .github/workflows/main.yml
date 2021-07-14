@@ -26,6 +26,6 @@ jobs:
           push: true
           tags: spdrbeaver/drawchevo-client:drawchevo.spiderbeaver.com
           build-args: |
-            api_url=https://server.drawchevo.spiderbeaver.com
+            server_url=wss://server.drawchevo.spiderbeaver.com
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
